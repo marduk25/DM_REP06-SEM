@@ -16,9 +16,8 @@ public class Obsdocc01DaoImp implements Obsdocc01Dao {
         List<ObsDocc01> lista = null;
         Session session = HibernateUtilSae.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "SELECT MAX(cveObs) +1 FROM ObsDocc01";
         try {
-            lista = session.createQuery(hql).list();
+            lista = session.createQuery("SELECT MAX(cveObs) +1 FROM ObsDocc01").list();
             t.commit();
             session.close();
         } catch (Exception e) {

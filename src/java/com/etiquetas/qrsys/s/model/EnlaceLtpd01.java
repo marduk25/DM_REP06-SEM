@@ -2,7 +2,7 @@ package com.etiquetas.qrsys.s.model;
 
 public class EnlaceLtpd01 implements java.io.Serializable {
 
-    private int id;
+    private int eLtpd;
     private Integer regLtpd;
     private Double cantidad;
     private Double pxrs;
@@ -10,23 +10,23 @@ public class EnlaceLtpd01 implements java.io.Serializable {
     public EnlaceLtpd01() {
     }
 
-    public EnlaceLtpd01(int id) {
-        this.id = id;
+    public EnlaceLtpd01(int eLtpd) {
+        this.eLtpd = eLtpd;
     }
 
-    public EnlaceLtpd01(int id, Integer regLtpd, Double cantidad, Double pxrs) {
-        this.id = id;
+    public EnlaceLtpd01(int eLtpd, Integer regLtpd, Double cantidad, Double pxrs) {
+        this.eLtpd = eLtpd;
         this.regLtpd = regLtpd;
         this.cantidad = cantidad;
         this.pxrs = pxrs;
     }
 
-    public int getId() {
-        return id;
+    public int geteLtpd() {
+        return eLtpd;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void seteLtpd(int eLtpd) {
+        this.eLtpd = eLtpd;
     }
 
     public Integer getRegLtpd() {

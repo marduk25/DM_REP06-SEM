@@ -6,6 +6,8 @@ import com.etiquetas.qrsys.dao.Compc01Dao;
 import com.etiquetas.qrsys.dao.Compc01DaoImp;
 import com.etiquetas.qrsys.dao.CompcClib01Dao;
 import com.etiquetas.qrsys.dao.CompcClib01DaoImp;
+import com.etiquetas.qrsys.dao.EnlaceLtpd01Dao;
+import com.etiquetas.qrsys.dao.EnlaceLtpd01DaoImp;
 import com.etiquetas.qrsys.dao.FacturaDao;
 import com.etiquetas.qrsys.dao.FacturaDaoImp;
 import com.etiquetas.qrsys.dao.Foliosc01Dao;
@@ -33,6 +35,7 @@ import com.etiquetas.qrsys.e.model.Serie;
 import com.etiquetas.qrsys.e.model.Usuario;
 import com.etiquetas.qrsys.s.model.Compc01;
 import com.etiquetas.qrsys.s.model.CompcClib01;
+import com.etiquetas.qrsys.s.model.EnlaceLtpd01;
 import com.etiquetas.qrsys.s.model.Ltpd01;
 import com.etiquetas.qrsys.s.model.ObsDocc01;
 import java.io.Serializable;
@@ -82,7 +85,7 @@ public class FacturaBean implements Serializable {
     private CompcClib01 compcclib01;
     private Ltpd01 lp;
     private List<String> listaSeriesSaeReg;
-
+    private EnlaceLtpd01 enlace;
     Usuario user = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
 
     public FacturaBean() {
@@ -103,6 +106,7 @@ public class FacturaBean implements Serializable {
         compc = new Compc01();
         compcclib01 = new CompcClib01();
         lp = new Ltpd01();
+        enlace = new EnlaceLtpd01();
     }
 
     public Factura getFactura() {
@@ -269,6 +273,14 @@ public class FacturaBean implements Serializable {
 
     public void setLp(Ltpd01 lp) {
         this.lp = lp;
+    }
+
+    public EnlaceLtpd01 getEnlace() {
+        return enlace;
+    }
+
+    public void setEnlace(EnlaceLtpd01 enlace) {
+        this.enlace = enlace;
     }
 
     public List<String> getListaSeriesSaeReg() {
@@ -528,7 +540,7 @@ public class FacturaBean implements Serializable {
 
             //**OBTENEMOS EL TOTAL DE LAS SERIES**//
             SerieDao serieDao = new SerieDaoImp();
-            String conteo = serieDao.listarSeriesSae(user.getIdusuario(), serieEditar.getPedimento(), art[i].trim()).toString().replace("[", "").replace("]","");
+            String conteo = serieDao.listarSeriesSae(user.getIdusuario(), serieEditar.getPedimento(), art[i].trim()).toString().replace("[", "").replace("]", "");
             lp.setCveArt(art[i].trim());
             lp.setLote(serieEditar.getLote());
             lp.setPedimento(serieEditar.getPedimento());
@@ -545,22 +557,34 @@ public class FacturaBean implements Serializable {
             lp.setPedimentosat(serieEditar.getPedimento());
             Ltpd01Dao lpDao = new Ltpd01DaoImp();
             lpDao.saveLtp01(lp);
+
+            //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA LTPD01 DEL CAMPO REG_LTPD**//
+            Ltpd01Dao regDao = new Ltpd01DaoImp();
+            String maxReg = regDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
+
+            //**ACTUALIZAMOS LA TABLA TBLCONTROL01 CAMPO ULT_CVE='maxVal'-ID_TABLE=48**//
+            Tblcontrol01Dao tablaDao = new Tblcontrol01DaoImpl();
+            tablaDao.updateTablaControl(Integer.parseInt(maxReg));
+
+            //**OBTENEMOS EL VALOR MAXIMO DE LA TABLA ENLACE_LTPD01**//
+            EnlaceLtpd01Dao eDao = new EnlaceLtpd01DaoImp();
+            String maxRegEnlace = eDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
+
+            //**GUARDAMOS EN LA TABLA ENLACE_LTPD01 LOS VALORES EN LOS CAMPOS E_LTPD,REG_LTPD,CANTIDAD,PXRS**//
+            EnlaceLtpd01Dao enDao = new EnlaceLtpd01DaoImp();
+            enlace.seteLtpd(Integer.parseInt(maxRegEnlace));
+            enlace.setRegLtpd(Integer.parseInt(maxReg));
+            enlace.setCantidad(Double.parseDouble(conteo));
+            enlace.setPxrs(Double.parseDouble(conteo));
+            enDao.saveEnlaceLtpd01(enlace);
+            
             conteo = "";
             maxVal = "";
+            maxReg = "";
+            maxRegEnlace="";
         }
 
-        //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA LTPD01 DEL CAMPO REG_LTPD**//
-        Ltpd01Dao regDao = new Ltpd01DaoImp();
-        String maxReg = regDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
-
-        //**ACTUALIZAMOS LA TABLA TBLCONTROL01 CAMPO ULT_CVE='maxVal'-ID_TABLE=48**//
-        Tblcontrol01Dao tablaDao = new Tblcontrol01DaoImpl();
-        tablaDao.updateTablaControl(Integer.parseInt(maxReg));
-
-        
-        
         //**LIMPIAMOS LOS OBJETOS**//
-        maxReg = "";
         compcclib01 = new CompcClib01();
         obsdoc = new ObsDocc01();
         lp = new Ltpd01();

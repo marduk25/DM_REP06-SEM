@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.etiquetas.qrsys.s.model.EnlaceLtpd01" table="ENLACE_LTPD01" schema="dbo" catalog="SAE70Empre01" optimistic-lock="version">
+        <composite-id name="id" class="com.etiquetas.qrsys.s.model.EnlaceLtpd01Id">
+            <key-property name="ELtpd" type="int">
+                <column name="E_LTPD" />
+            </key-property>
+            <key-property name="regLtpd" type="java.lang.Integer">
+                <column name="REG_LTPD" />
+            </key-property>
+            <key-property name="cantidad" type="java.lang.Double">
+                <column name="CANTIDAD" precision="53" scale="0" />
+            </key-property>
+            <key-property name="pxrs" type="java.lang.Double">
+                <column name="PXRS" precision="53" scale="0" />
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>

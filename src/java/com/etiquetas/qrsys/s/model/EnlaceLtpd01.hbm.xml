@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="com.etiquetas.qrsys.s.model.EnlaceLtpd01" table="ENLACE_LTPD01" schema="dbo" catalog="SAE70Empre01" optimistic-lock="version">
-        <id name="ELtpd" type="int">
+        <id name="eLtpd" type="java.lang.Integer">
             <column name="E_LTPD"/>
             <generator class="assigned" />
         </id>

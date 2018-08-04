@@ -558,7 +558,7 @@ public class FacturaBean implements Serializable {
             Ltpd01Dao lpDao = new Ltpd01DaoImp();
             lpDao.saveLtp01(lp);
 
-            //**colocar metodo para actualizar el campo SAE a 1**//
+           
             //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA LTPD01 DEL CAMPO REG_LTPD**//
             Ltpd01Dao regDao = new Ltpd01DaoImp();
             String maxReg = regDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
@@ -578,6 +578,18 @@ public class FacturaBean implements Serializable {
             enlace.setCantidad(Double.parseDouble(conteo));
             enlace.setPxrs(Double.parseDouble(conteo));
             enDao.saveEnlaceLtpd01(enlace);
+            
+            //**ACTUALIZAMOS LA TABLA TBLCONTROL01 SET ULT_CVE = 'MAX(E_LTPD)' WHERE ID_TABLA=67**//
+            Tblcontrol01Dao taDao = new Tblcontrol01DaoImpl();
+            taDao.updateTbl67Control(Integer.parseInt(maxRegEnlace));
+            
+             //**ACTUALIZAMOS LA TABLA SERIES CAMPO SAE A 1**//
+             SerieDao serDao = new SerieDaoImp();
+             String serieSae = listaSeriesSaeReg.toString().replace("[", "").replace("]", "");
+             String []artSae=serieSae.split(",");
+            for (int j = 0; j < listaSeriesSaeReg.size(); j++) {
+                serDao.updateSerieSae1(artSae[j]);
+            }
             
             conteo = "";
             maxVal = "";

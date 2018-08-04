@@ -241,4 +241,19 @@ public class SerieDaoImp implements SerieDao {
         return lista;
     }
 
+    @Override
+    public void updateSerieSae1(String serie) {
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        Query<?> q = session.createQuery("UPDATE Serie SET sae=1 WHERE serie=:serie");
+        q.setParameter("serie", serie);
+        try {
+            q.executeUpdate();
+            t.commit();
+            session.close();
+        } catch (Exception e) {         
+            t.rollback();
+        }
+    }
+
 }

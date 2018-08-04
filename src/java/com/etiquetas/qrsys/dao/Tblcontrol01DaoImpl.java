@@ -11,8 +11,7 @@ public class Tblcontrol01DaoImpl implements Tblcontrol01Dao {
     public void updateTblControl(int clave) {
         Session session = HibernateUtilSae.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "UPDATE Tblcontrol01 SET ultCve=:clave WHERE idTabla=57";
-        Query<?> q = session.createQuery(hql);
+        Query<?> q = session.createQuery("UPDATE Tblcontrol01 SET ultCve=:clave WHERE idTabla=57");
         q.setParameter("clave", clave);
         try {
             q.executeUpdate();
@@ -27,8 +26,22 @@ public class Tblcontrol01DaoImpl implements Tblcontrol01Dao {
     public void updateTablaControl(int clave) {
         Session session = HibernateUtilSae.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "UPDATE Tblcontrol01 SET ultCve=:clave WHERE idTabla=48";
-        Query<?> q = session.createQuery(hql);
+        Query<?> q = session.createQuery("UPDATE Tblcontrol01 SET ultCve=:clave WHERE idTabla=48");
+        q.setParameter("clave", clave);
+        try {
+            q.executeUpdate();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        }
+    }
+
+    @Override
+    public void updateTbl67Control(int clave) {
+        Session session = HibernateUtilSae.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        Query<?> q = session.createQuery("UPDATE Tblcontrol01 SET ultCve=:clave WHERE idTabla=67");
         q.setParameter("clave", clave);
         try {
             q.executeUpdate();

@@ -558,6 +558,7 @@ public class FacturaBean implements Serializable {
             Ltpd01Dao lpDao = new Ltpd01DaoImp();
             lpDao.saveLtp01(lp);
 
+            //**colocar metodo para actualizar el campo SAE a 1**//
             //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA LTPD01 DEL CAMPO REG_LTPD**//
             Ltpd01Dao regDao = new Ltpd01DaoImp();
             String maxReg = regDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");

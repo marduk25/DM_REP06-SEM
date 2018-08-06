@@ -33,5 +33,7 @@ public interface SerieDao {
     public List<String> listarSeriesSaeRegistro(int user, String pedimento);
     
     public void updateSerieSae1(String serie);
+    
+    public List<String> listarSeriesSaeEstado1(int user, String pedimento);
 
 }

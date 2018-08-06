@@ -2,8 +2,11 @@ package com.etiquetas.qrsys.dao;
 
 import com.etiquetas.qrsys.s.model.ParCompc01;
 import com.etiquetas.qrsys.util.HibernateUtilSae;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 public class ParCompc01Imp implements ParCompc01Dao {
 
@@ -20,6 +23,23 @@ public class ParCompc01Imp implements ParCompc01Dao {
         } catch (HibernateException e) {
             session.getTransaction().rollback();
         }
+    }
+
+    @Override
+    public List<ParCompc01> obtenerMaximoValor(String factura) {
+        List<ParCompc01> lista = null;
+        Session session = HibernateUtilSae.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Query q = session.createQuery("SELECT MAX(numPar) +1 FROM ParCompc01 WHERE cveDoc=:factura");
+            q.setParameter("factura", factura);
+            lista = q.list();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        return lista;
     }
 
 }

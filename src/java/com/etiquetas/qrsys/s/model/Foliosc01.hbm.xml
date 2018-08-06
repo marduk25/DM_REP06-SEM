@@ -5,6 +5,7 @@
     <class name="com.etiquetas.qrsys.s.model.Foliosc01" table="FOLIOSC01" schema="dbo" catalog="SAE70Empre01" optimistic-lock="version">    
         <id name="tipDoc" type="string">
             <column name="TIP_DOC" length="1" />
+            <generator class="assigned" />
         </id>
         <property name="serie" type="string">
             <column name="SERIE" length="10" />

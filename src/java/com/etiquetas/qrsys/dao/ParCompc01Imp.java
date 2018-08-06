@@ -26,8 +26,8 @@ public class ParCompc01Imp implements ParCompc01Dao {
     }
 
     @Override
-    public List<ParCompc01> obtenerMaximoValor(String factura) {
-        List<ParCompc01> lista = null;
+    public List<Integer> obtenerMaximoValor(String factura) {
+        List<Integer> lista = null;
         Session session = HibernateUtilSae.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
         try {

@@ -14,9 +14,8 @@ public class Compc01DaoImp implements Compc01Dao {
         List<Compc01> lista = null;
         Session session = HibernateUtilSae.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "SELECT MAX(folio) +1 FROM Compc01";
         try {
-            lista = session.createQuery(hql).list();
+            lista = session.createQuery("SELECT MAX(folio) +1 FROM Compc01").list();
             t.commit();
             session.close();
         } catch (Exception e) {

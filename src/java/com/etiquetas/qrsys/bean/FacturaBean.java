@@ -12,14 +12,22 @@ import com.etiquetas.qrsys.dao.FacturaDao;
 import com.etiquetas.qrsys.dao.FacturaDaoImp;
 import com.etiquetas.qrsys.dao.Foliosc01Dao;
 import com.etiquetas.qrsys.dao.Foliosc01DaoImp;
+import com.etiquetas.qrsys.dao.Hnumser01Dao;
+import com.etiquetas.qrsys.dao.Hnumser01DaoImp;
 import com.etiquetas.qrsys.dao.Impu01Dao;
 import com.etiquetas.qrsys.dao.ImpuDaoImp;
 import com.etiquetas.qrsys.dao.Ltpd01Dao;
 import com.etiquetas.qrsys.dao.Ltpd01DaoImp;
+import com.etiquetas.qrsys.dao.Minve01Dao;
+import com.etiquetas.qrsys.dao.Minve01DaoImp;
 import com.etiquetas.qrsys.dao.Moned01Dao;
 import com.etiquetas.qrsys.dao.MonedaDaoImp;
 import com.etiquetas.qrsys.dao.Obsdocc01Dao;
 import com.etiquetas.qrsys.dao.Obsdocc01DaoImp;
+import com.etiquetas.qrsys.dao.ParCompc01Dao;
+import com.etiquetas.qrsys.dao.ParCompc01Imp;
+import com.etiquetas.qrsys.dao.ParCompcClib01Dao;
+import com.etiquetas.qrsys.dao.ParCompcClib01DaoImp;
 import com.etiquetas.qrsys.dao.Prov01Dao;
 import com.etiquetas.qrsys.dao.Prov01DaoImp;
 import com.etiquetas.qrsys.dao.SerieDao;
@@ -38,6 +46,8 @@ import com.etiquetas.qrsys.s.model.CompcClib01;
 import com.etiquetas.qrsys.s.model.EnlaceLtpd01;
 import com.etiquetas.qrsys.s.model.Ltpd01;
 import com.etiquetas.qrsys.s.model.ObsDocc01;
+import com.etiquetas.qrsys.s.model.ParCompc01;
+import com.etiquetas.qrsys.s.model.ParCompcClib01;
 import java.io.Serializable;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -86,6 +96,8 @@ public class FacturaBean implements Serializable {
     private Ltpd01 lp;
     private List<String> listaSeriesSaeReg;
     private EnlaceLtpd01 enlace;
+    private ParCompc01 parcompc;
+    private ParCompcClib01 clib01;
     Usuario user = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
 
     public FacturaBean() {
@@ -107,6 +119,8 @@ public class FacturaBean implements Serializable {
         compcclib01 = new CompcClib01();
         lp = new Ltpd01();
         enlace = new EnlaceLtpd01();
+        parcompc = new ParCompc01();
+        clib01 = new ParCompcClib01();
     }
 
     public Factura getFactura() {
@@ -283,6 +297,22 @@ public class FacturaBean implements Serializable {
         this.enlace = enlace;
     }
 
+    public ParCompc01 getParcompc() {
+        return parcompc;
+    }
+
+    public void setParcompc(ParCompc01 parcompc) {
+        this.parcompc = parcompc;
+    }
+
+    public ParCompcClib01 getClib01() {
+        return clib01;
+    }
+
+    public void setClib01(ParCompcClib01 clib01) {
+        this.clib01 = clib01;
+    }
+
     public List<String> getListaSeriesSaeReg() {
         return listaSeriesSaeReg;
     }
@@ -379,8 +409,6 @@ public class FacturaBean implements Serializable {
         factura.setIdproveedor(codprov[1]);
         factura.setCveobs(Integer.parseInt(dato));
 
-        fDao.updateFactura(factura);
-
         //**OBTENEMOS LA INFORMACION DEL CAMPO OBSERVACION DE LA TABLA FACTURA**//
         facturaRegistro = new Factura();
         FacturaDao facRegDao = new FacturaDaoImp();
@@ -399,6 +427,8 @@ public class FacturaBean implements Serializable {
         for (int i = 0; i < (20 - folio.length()); i++) {
             x = x + " ";
         }
+        factura.setCvedoc(folio);
+        fDao.updateFactura(factura);
         compc.setCveDoc(x.concat(folio));
         compc.setFechaDoc(facturaRegistro.getFecha());
         compc.setFechaRec(facturaRegistro.getFecha());
@@ -534,11 +564,11 @@ public class FacturaBean implements Serializable {
             Ltpd01Dao lDao = new Ltpd01DaoImp();
             String maxVal = lDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
 
-            //**GUARDAMOS EL TOTAL DE LAS SERIES EN LA TABLA LTPD01**//
+            //**OBTENEMOS EL TOTAL DE LAS SERIES**//
             String miArt = listaSeriesSaeReg.toString().replace("[", "").replace("]", "");
             String[] art = miArt.split(",");
 
-            //**OBTENEMOS EL TOTAL DE LAS SERIES**//
+            //**GUARDAMOS EL TOTAL DE LAS SERIES EN LA TABLA LTPD01**//
             SerieDao serieDao = new SerieDaoImp();
             String conteo = serieDao.listarSeriesSae(user.getIdusuario(), serieEditar.getPedimento(), art[i].trim()).toString().replace("[", "").replace("]", "");
             lp.setCveArt(art[i].trim());
@@ -558,7 +588,6 @@ public class FacturaBean implements Serializable {
             Ltpd01Dao lpDao = new Ltpd01DaoImp();
             lpDao.saveLtp01(lp);
 
-           
             //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA LTPD01 DEL CAMPO REG_LTPD**//
             Ltpd01Dao regDao = new Ltpd01DaoImp();
             String maxReg = regDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
@@ -578,29 +607,79 @@ public class FacturaBean implements Serializable {
             enlace.setCantidad(Double.parseDouble(conteo));
             enlace.setPxrs(Double.parseDouble(conteo));
             enDao.saveEnlaceLtpd01(enlace);
-            
+
             //**ACTUALIZAMOS LA TABLA TBLCONTROL01 SET ULT_CVE = 'MAX(E_LTPD)' WHERE ID_TABLA=67**//
             Tblcontrol01Dao taDao = new Tblcontrol01DaoImpl();
             taDao.updateTbl67Control(Integer.parseInt(maxRegEnlace));
-            
-             //**ACTUALIZAMOS LA TABLA SERIES CAMPO SAE A 1**//
-             SerieDao serDao = new SerieDaoImp();
-             String serieSae = listaSeriesSaeReg.toString().replace("[", "").replace("]", "");
-             String []artSae=serieSae.split(",");
-            for (int j = 0; j < listaSeriesSaeReg.size(); j++) {
-                serDao.updateSerieSae1(artSae[j]);
-            }
+            //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA HNUMSER01**//
+            Hnumser01Dao hDao = new Hnumser01DaoImp();
+            String maxRegHnumser = hDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
+            //**GUARDAMOS EN LA TABLA PAR_COMPC01**//
+            ParCompc01Dao parDao = new ParCompc01Imp();
+            parcompc.setCveDoc(facturaObservacion.getCvedoc());
+            parcompc.setNumPar(i);//buscar el número de partida en esta tabla PAR_COMPC01
+            parcompc.setCveArt(art[i].trim());
+            parcompc.setCant(Double.parseDouble(conteo));
+            parcompc.setPxr(Double.parseDouble(conteo));
+            parcompc.setPrec(0.0);
+            parcompc.setCost(0.0);
+            parcompc.setImpu1(0.0);
+            parcompc.setImpu2(0.0);
+            parcompc.setImpu3(0.0);
+            parcompc.setImpu4(0.0);
+            parcompc.setImp1apla(Short.parseShort("0"));
+            parcompc.setImp2apla(Short.parseShort("0"));
+            parcompc.setImp3apla(Short.parseShort("0"));
+            parcompc.setImp4apla(Short.parseShort("0"));
+            parcompc.setTotimp1(0.0);
+            parcompc.setTotimp2(0.0);
+            parcompc.setTotimp3(0.0);
+            parcompc.setTotimp4(0.0);
+            parcompc.setDescu(0.0);
+            parcompc.setActInv("S");
+            parcompc.setTipCam(facturaObservacion.getTipocambio());
+            parcompc.setUniVenta("PZ");
+            parcompc.setTipoElem("N");
+            parcompc.setTipoProd("P");
+            parcompc.setCveObs(0);
+            parcompc.setRegSerie(Integer.parseInt(maxRegHnumser));
+            parcompc.setELtpd(Integer.parseInt(maxRegEnlace));
+            parcompc.setFactconv(1.0);
+            parcompc.setCostDev(0.0);
+            parcompc.setNumAlm(facturaObservacion.getIdalmacen());
+            parcompc.setMindirecto(0.0);
+            //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA MINVE01 DEL CAMPO NUM_MOV**//
+            Minve01Dao mDao = new Minve01DaoImp();
+            String maxValMinve = mDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
+            parcompc.setNumMov(Integer.parseInt(maxValMinve));///Colocar el NUM_MOV
+            parcompc.setTotPartida(0.0);
+            parDao.saveParCompc01(parcompc);
+
+            //**GUARDAMOS EN LA TABLA PAR_COMPC_CLIB01**//
+            ParCompcClib01Dao clibDao = new ParCompcClib01DaoImp();
+            clib01.setClaveDoc(facturaObservacion.getCvedoc());
+            clib01.setNumPart(i);//colocarl el número de partida
+            clibDao.saveParCompcClib(clib01);
             
             conteo = "";
             maxVal = "";
             maxReg = "";
-            maxRegEnlace="";
+            maxRegEnlace = "";
+            maxValMinve = "";
         }
-
+        //**ACTUALIZAMOS LA TABLA SERIES CAMPO SAE A 1**//
+        SerieDao serDao = new SerieDaoImp();
+        List<String> serieSae = null;
+        serieSae = serDao.listarSeriesSaeEstado1(user.getIdusuario(), serieEditar.getPedimento());
+        for (int j = 0; j < serieSae.size(); j++) {
+            serDao.updateSerieSae1(serieSae.get(j).replace("[", "").replace("]", ""));
+        }
         //**LIMPIAMOS LOS OBJETOS**//
         compcclib01 = new CompcClib01();
         obsdoc = new ObsDocc01();
         lp = new Ltpd01();
+        parcompc = new ParCompc01();
+        clib01 = new ParCompcClib01();
         //**LIMPIAMOS LOS OBJETOS**//
 
         //**LISTAMOS LA INFORMACION DE LAS SERIES SIN INFORMACIÓN CORRESPONDIENTES A LA FACTURA SELECCIONADA**//

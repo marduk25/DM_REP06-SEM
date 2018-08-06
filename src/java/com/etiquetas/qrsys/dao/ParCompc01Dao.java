@@ -7,6 +7,6 @@ public interface ParCompc01Dao {
 
     public void saveParCompc01(ParCompc01 parcompc);
     
-    public List<ParCompc01> obtenerMaximoValor(String factura);
+    public List<Integer> obtenerMaximoValor(String factura);
 
 }

@@ -3,14 +3,14 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="com.etiquetas.qrsys.s.model.ParCompc01" table="PAR_COMPC01" schema="dbo" catalog="SAE70Empre01" optimistic-lock="version">
-        <composite-id name="id" class="com.etiquetas.qrsys.s.model.ParCompc01Id">
-            <key-property name="cveDoc" type="string">
-                <column name="CVE_DOC" length="20" />
-            </key-property>
-            <key-property name="numPar" type="int">
-                <column name="NUM_PAR" />
-            </key-property>
-        </composite-id>
+ 
+        <id name="cveDoc" type="string">
+            <column name="CVE_DOC" length="20" />
+            <generator class="assigned" />
+        </id>
+        <property name="numPar" type="int">
+            <column name="NUM_PAR" />
+        </property>
         <property name="cveArt" type="string">
             <column name="CVE_ART" length="16" />
         </property>

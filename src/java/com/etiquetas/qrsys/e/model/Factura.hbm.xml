@@ -50,6 +50,9 @@
         <property name="cveobs" type="java.lang.Integer">
             <column name="CVEOBS" />
         </property>
+        <property name="cvedoc" type="string">
+            <column name="CVEDOC" length="20" />
+        </property>
         <set name="series" table="SERIE" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IDFACTURA" not-null="true" />

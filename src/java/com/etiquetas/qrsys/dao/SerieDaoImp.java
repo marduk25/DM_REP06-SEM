@@ -256,4 +256,22 @@ public class SerieDaoImp implements SerieDao {
         }
     }
 
+    @Override
+    public List<String> listarSeriesSaeEstado1(int user, String pedimento) {
+        List<String> lista=null;
+        Session session  = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Query q = session.createQuery("SELECT serie FROM Serie WHERE idusuario=:user AND pedimento=:pedimento AND sae=0");
+            q.setParameter("user",user);
+            q.setParameter("pedimento",pedimento);
+            lista = q.list();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
 }

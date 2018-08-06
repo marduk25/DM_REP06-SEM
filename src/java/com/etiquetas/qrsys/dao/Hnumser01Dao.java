@@ -6,4 +6,6 @@ import java.util.List;
 public interface Hnumser01Dao {
 
     public List<Hnumser01> obtenerMaximoValor();
+
+    public void saveHmunser(Hnumser01 hnumser);
 }

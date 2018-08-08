@@ -408,7 +408,15 @@ public class FacturaBean implements Serializable {
         factura.setProveedor(codprov[0]);
         factura.setIdproveedor(codprov[1]);
         factura.setCveobs(Integer.parseInt(dato));
-
+        Compc01Dao comDao = new Compc01DaoImp();
+        String folio = comDao.obtenerMaximoValor().toString().replace("[", "");
+        folio = folio.replace("]", "");
+        String x = "";
+        for (int i = 0; i < (20 - folio.length()); i++) {
+            x = x + " ";
+        }
+        factura.setCvedoc(x.concat(folio));
+        fDao.updateFactura(factura);
         //**OBTENEMOS LA INFORMACION DEL CAMPO OBSERVACION DE LA TABLA FACTURA**//
         facturaRegistro = new Factura();
         FacturaDao facRegDao = new FacturaDaoImp();
@@ -420,15 +428,6 @@ public class FacturaBean implements Serializable {
         compc.setCveClpv(this.facturaRegistro.getIdproveedor());
         compc.setStatus("O");
         compc.setSuRefer(this.facturaRegistro.getNofactura());
-        Compc01Dao comDao = new Compc01DaoImp();
-        String folio = comDao.obtenerMaximoValor().toString().replace("[", "");
-        folio = folio.replace("]", "");
-        String x = "";
-        for (int i = 0; i < (20 - folio.length()); i++) {
-            x = x + " ";
-        }
-        factura.setCvedoc(folio);
-        fDao.updateFactura(factura);
         compc.setCveDoc(x.concat(folio));
         compc.setFechaDoc(facturaRegistro.getFecha());
         compc.setFechaRec(facturaRegistro.getFecha());
@@ -448,7 +447,7 @@ public class FacturaBean implements Serializable {
         compc.setActCoi("N");
         compc.setEnlazado("O");
         compc.setTipDocE("O");
-        switch (this.facturaRegistro.getMoneda()) {
+        switch (this.factura.getMoneda()) {
             case "PESOS":
                 valorMoneda = 1;
                 break;
@@ -617,7 +616,12 @@ public class FacturaBean implements Serializable {
             //**GUARDAMOS EN LA TABLA PAR_COMPC01**//
             ParCompc01Dao parDao = new ParCompc01Imp();
             parcompc.setCveDoc(facturaObservacion.getCvedoc());
-            parcompc.setNumPar(i);//buscar el número de partida en esta tabla PAR_COMPC01
+            ParCompc01Dao itemDao = new ParCompc01Imp();
+            String item = itemDao.obtenerMaximoValor(facturaObservacion.getCvedoc()).toString().replace("[", "").replace("]", "");
+            if (item.contains("null")) {
+                item = "1";
+            }
+            parcompc.setNumPar(Integer.parseInt(item));//buscar el número de partida en la tabla PAR_COMPC01
             parcompc.setCveArt(art[i].trim());
             parcompc.setCant(Double.parseDouble(conteo));
             parcompc.setPxr(Double.parseDouble(conteo));
@@ -658,14 +662,15 @@ public class FacturaBean implements Serializable {
             //**GUARDAMOS EN LA TABLA PAR_COMPC_CLIB01**//
             ParCompcClib01Dao clibDao = new ParCompcClib01DaoImp();
             clib01.setClaveDoc(facturaObservacion.getCvedoc());
-            clib01.setNumPart(i);//colocarl el número de partida
+            clib01.setNumPart(Integer.parseInt(item));//colocarl el número de partida
             clibDao.saveParCompcClib(clib01);
-            
+
             conteo = "";
             maxVal = "";
             maxReg = "";
             maxRegEnlace = "";
             maxValMinve = "";
+            maxRegHnumser = "";
         }
         //**ACTUALIZAMOS LA TABLA SERIES CAMPO SAE A 1**//
         SerieDao serDao = new SerieDaoImp();

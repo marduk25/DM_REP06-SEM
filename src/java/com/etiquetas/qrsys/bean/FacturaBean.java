@@ -1,53 +1,8 @@
 package com.etiquetas.qrsys.bean;
 
-import com.etiquetas.qrsys.dao.Almacenes01Dao;
-import com.etiquetas.qrsys.dao.Almacenes01DaoImp;
-import com.etiquetas.qrsys.dao.Compc01Dao;
-import com.etiquetas.qrsys.dao.Compc01DaoImp;
-import com.etiquetas.qrsys.dao.CompcClib01Dao;
-import com.etiquetas.qrsys.dao.CompcClib01DaoImp;
-import com.etiquetas.qrsys.dao.EnlaceLtpd01Dao;
-import com.etiquetas.qrsys.dao.EnlaceLtpd01DaoImp;
-import com.etiquetas.qrsys.dao.FacturaDao;
-import com.etiquetas.qrsys.dao.FacturaDaoImp;
-import com.etiquetas.qrsys.dao.Foliosc01Dao;
-import com.etiquetas.qrsys.dao.Foliosc01DaoImp;
-import com.etiquetas.qrsys.dao.Hnumser01Dao;
-import com.etiquetas.qrsys.dao.Hnumser01DaoImp;
-import com.etiquetas.qrsys.dao.Impu01Dao;
-import com.etiquetas.qrsys.dao.ImpuDaoImp;
-import com.etiquetas.qrsys.dao.Ltpd01Dao;
-import com.etiquetas.qrsys.dao.Ltpd01DaoImp;
-import com.etiquetas.qrsys.dao.Minve01Dao;
-import com.etiquetas.qrsys.dao.Minve01DaoImp;
-import com.etiquetas.qrsys.dao.Moned01Dao;
-import com.etiquetas.qrsys.dao.MonedaDaoImp;
-import com.etiquetas.qrsys.dao.Obsdocc01Dao;
-import com.etiquetas.qrsys.dao.Obsdocc01DaoImp;
-import com.etiquetas.qrsys.dao.ParCompc01Dao;
-import com.etiquetas.qrsys.dao.ParCompc01Imp;
-import com.etiquetas.qrsys.dao.ParCompcClib01Dao;
-import com.etiquetas.qrsys.dao.ParCompcClib01DaoImp;
-import com.etiquetas.qrsys.dao.Prov01Dao;
-import com.etiquetas.qrsys.dao.Prov01DaoImp;
-import com.etiquetas.qrsys.dao.SerieDao;
-import com.etiquetas.qrsys.dao.SerieDaoImp;
-import com.etiquetas.qrsys.dao.Tblcontrol01Dao;
-import com.etiquetas.qrsys.dao.Tblcontrol01DaoImpl;
-import com.etiquetas.qrsys.s.model.Almacenes01;
-import com.etiquetas.qrsys.e.model.Factura;
-import com.etiquetas.qrsys.s.model.Impu01;
-import com.etiquetas.qrsys.s.model.Moned01;
-import com.etiquetas.qrsys.s.model.Prov01;
-import com.etiquetas.qrsys.e.model.Serie;
-import com.etiquetas.qrsys.e.model.Usuario;
-import com.etiquetas.qrsys.s.model.Compc01;
-import com.etiquetas.qrsys.s.model.CompcClib01;
-import com.etiquetas.qrsys.s.model.EnlaceLtpd01;
-import com.etiquetas.qrsys.s.model.Ltpd01;
-import com.etiquetas.qrsys.s.model.ObsDocc01;
-import com.etiquetas.qrsys.s.model.ParCompc01;
-import com.etiquetas.qrsys.s.model.ParCompcClib01;
+import com.etiquetas.qrsys.dao.*;
+import com.etiquetas.qrsys.s.model.*;
+import com.etiquetas.qrsys.e.model.*;
 import java.io.Serializable;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -664,7 +619,16 @@ public class FacturaBean implements Serializable {
             clib01.setClaveDoc(facturaObservacion.getCvedoc());
             clib01.setNumPart(Integer.parseInt(item));//colocarl el número de partida
             clibDao.saveParCompcClib(clib01);
-
+            //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA MULT01**//
+            Mult01Dao mulDao = new Mult01DaoImp();
+            String maxValMult = mulDao.obtenerMaximoValor(art[i].trim(), facturaObservacion.getIdalmacen()).toString();
+            if (maxValMult.contains("null")) {
+                maxValMult = "0.0";
+            }
+            //**ACTUALIZAMOS EL MAXIMO VALOR EN LA TABLA MULT01 CAMPO EXIST+LA CANTIDAD**//
+            Mult01Dao mult01Dao = new Mult01DaoImp();
+            mult01Dao.updateMult01(art[i], facturaObservacion.getIdalmacen(), (Double.parseDouble(conteo) + Double.parseDouble(maxValMult)));
+            
             conteo = "";
             maxVal = "";
             maxReg = "";

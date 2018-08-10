@@ -53,6 +53,10 @@ public class FacturaBean implements Serializable {
     private EnlaceLtpd01 enlace;
     private ParCompc01 parcompc;
     private ParCompcClib01 clib01;
+    private Minve01 minve;
+    private Hnumser01 hnumser;
+    private Numser01 numser;
+    private List<String> listaHNSer;
     Usuario user = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
 
     public FacturaBean() {
@@ -76,6 +80,9 @@ public class FacturaBean implements Serializable {
         enlace = new EnlaceLtpd01();
         parcompc = new ParCompc01();
         clib01 = new ParCompcClib01();
+        minve = new Minve01();
+        hnumser = new Hnumser01();
+        numser = new Numser01();
     }
 
     public Factura getFactura() {
@@ -268,8 +275,40 @@ public class FacturaBean implements Serializable {
         this.clib01 = clib01;
     }
 
+    public Minve01 getMinve() {
+        return minve;
+    }
+
+    public void setMinve(Minve01 minve) {
+        this.minve = minve;
+    }
+
     public List<String> getListaSeriesSaeReg() {
         return listaSeriesSaeReg;
+    }
+
+    public List<String> getListaHNSer() {
+        return listaHNSer;
+    }
+
+    public void setListaHNSer(List<String> listaHNSer) {
+        this.listaHNSer = listaHNSer;
+    }
+
+    public Hnumser01 getHnumser() {
+        return hnumser;
+    }
+
+    public void setHnumser(Hnumser01 hnumser) {
+        this.hnumser = hnumser;
+    }
+
+    public Numser01 getNumser() {
+        return numser;
+    }
+
+    public void setNumser(Numser01 numser) {
+        this.numser = numser;
     }
 
     public List<SelectItem> getListaProveedores() {
@@ -480,6 +519,7 @@ public class FacturaBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "SISTEMA DE ETIQUETAS", "Campos requeridos"));
         }
         SerieDao sDao = new SerieDaoImp();
+        listaHNSer = new ArrayList<>();
         for (int i = 0; i < listarSeries.size(); i++) {
             if (listarSeries.get(i).getSeleccionar().equals(TRUE)) {
                 FacturaDao facDao = new FacturaDaoImp();
@@ -498,6 +538,9 @@ public class FacturaBean implements Serializable {
                 series.setImpreso(0);
                 series.setSeleccionar(FALSE);
                 series.setSae(FALSE);
+                //**AGREGAMOS LOS DATOS A LA LISTA HNUMSER Y NUMSER**//
+                listaHNSer.add(listarSeries.get(i).getSerie());
+                listaHNSer.add(listarSeries.get(i).getArticulo());
                 //**ACTUALIZAMOS LOS DATOS ADUANA, PEDIMENTO, FECHA Y LOTE EN LA TABLA SERIE**//
                 sDao.updateSerie(series);
 
@@ -621,14 +664,57 @@ public class FacturaBean implements Serializable {
             clibDao.saveParCompcClib(clib01);
             //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA MULT01**//
             Mult01Dao mulDao = new Mult01DaoImp();
-            String maxValMult = mulDao.obtenerMaximoValor(art[i].trim(), facturaObservacion.getIdalmacen()).toString();
+            String maxValMult = mulDao.obtenerMaximoValor(art[i].trim(), facturaObservacion.getIdalmacen()).toString().replace("[", "").replace("]", "");
             if (maxValMult.contains("null")) {
                 maxValMult = "0.0";
             }
             //**ACTUALIZAMOS EL MAXIMO VALOR EN LA TABLA MULT01 CAMPO EXIST+LA CANTIDAD**//
             Mult01Dao mult01Dao = new Mult01DaoImp();
-            mult01Dao.updateMult01(art[i], facturaObservacion.getIdalmacen(), (Double.parseDouble(conteo) + Double.parseDouble(maxValMult)));
-            
+            mult01Dao.updateMult01(art[i].trim(), facturaObservacion.getIdalmacen(), (Double.parseDouble(conteo) + Double.parseDouble(maxValMult)));
+
+            Minve01Dao minveDao = new Minve01DaoImp();
+            minve.setCveArt(art[i].trim());
+            minve.setAlmacen(facturaObservacion.getIdalmacen());
+            minve.setNumMov(Integer.parseInt(maxValMinve));
+            minve.setCveCpto(1);
+            minve.setFechaDocu(facturaObservacion.getFecha());
+            minve.setTipoDoc("C");
+            minve.setRefer(facturaObservacion.getCvedoc());
+            minve.setClaveClpv(facturaObservacion.getIdproveedor());
+            //minve.setVend("");
+            minve.setCant(Double.parseDouble(conteo));
+            minve.setCantCost(1.0);
+            minve.setPrecio(0.0);
+            minve.setCosto(0.0);
+            //minve.setAfecCoi("");
+            minve.setCveObs(facturaObservacion.getCveobs());
+            minve.setRegSerie(Integer.parseInt(maxRegHnumser));
+            minve.setUniVenta("PZ");
+            minve.setELtpd(Integer.parseInt(maxRegEnlace));
+            minve.setExistencia((Double.parseDouble(conteo) + Double.parseDouble(maxValMult)));
+            minve.setTipoProd("P");
+            minve.setFactorCon(1.0);
+            minve.setFechaelab(facturaObservacion.getFecha());
+            //minve.setCtlpol("");
+            //minve.setCveFolio("");
+            minve.setSigno(1);
+            minve.setCosteado("S");
+            minve.setCostoPromIni(0.0);
+            minve.setCostoPromFin(0.0);
+            //minve.setCostoPromGral(0.0);
+            minve.setDesdeInve("N");
+            minve.setMovEnlazado(0);
+            minveDao.saveMinve01(minve);
+
+            //**OBTENEMOS LA SUMA DE LA TABLA INVE01 CAMPO EXIST**//
+            Inve01Dao sumaDao = new InveDaoImp();
+            double sumaExist = sumaDao.obtenerSumaExist(art[i].trim());
+
+            //**ACTUALIZAMOS LA TABLA INVEV01**//
+            Inve01Dao updateDao = new InveDaoImp();
+            updateDao.updateInve01(sumaExist + (Double.parseDouble(conteo)), art[i].trim());
+            //**GUARDAMOS EN LA TABLA HNUMSER**//
+
             conteo = "";
             maxVal = "";
             maxReg = "";
@@ -636,6 +722,12 @@ public class FacturaBean implements Serializable {
             maxValMinve = "";
             maxRegHnumser = "";
         }
+        //**GUARDAMOS EN LA TABLA NUMSER**//
+        for (String str : listaHNSer) {
+            System.out.println(str);
+        }
+        //**GUARDAMOS EN LA TABLA HNUMSER**//
+
         //**ACTUALIZAMOS LA TABLA SERIES CAMPO SAE A 1**//
         SerieDao serDao = new SerieDaoImp();
         List<String> serieSae = null;
@@ -649,6 +741,8 @@ public class FacturaBean implements Serializable {
         lp = new Ltpd01();
         parcompc = new ParCompc01();
         clib01 = new ParCompcClib01();
+        minve = new Minve01();
+        listaHNSer.clear();
         //**LIMPIAMOS LOS OBJETOS**//
 
         //**LISTAMOS LA INFORMACION DE LAS SERIES SIN INFORMACIÓN CORRESPONDIENTES A LA FACTURA SELECCIONADA**//

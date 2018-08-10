@@ -11,4 +11,8 @@ public interface Inve01Dao {
 
     public Inve01 returnArticuloExistente(Inve01 inve01);
 
+    public double obtenerSumaExist(String art);
+    
+    public void updateInve01(double cant, String art);
+
 }

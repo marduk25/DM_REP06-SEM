@@ -40,4 +40,36 @@ public class InveDaoImp implements Inve01Dao {
         return inve;
     }
 
+    @Override
+    public double obtenerSumaExist(String art) {
+        double suma = 0;
+        Session session = HibernateUtilSae.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Query q = session.createQuery("SELECT SUM(exist) FROM Inve01 WHERE cveArt=:art");
+            q.setParameter("art", art);
+            suma = q.getFirstResult();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        return suma;
+    }
+
+    @Override
+    public void updateInve01(double cant, String art) {
+        Session session = HibernateUtilSae.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        Query q = session.createQuery("UPDATE Inve01 SET exist=:cant WHERE cveArt=:art");
+        q.setParameter("cant", cant);
+        q.setParameter("art", art);
+        try {
+            q.executeUpdate();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        }
+    }
 }

@@ -57,6 +57,7 @@ public class FacturaBean implements Serializable {
     private Hnumser01 hnumser;
     private Numser01 numser;
     private List<String> listaHNSer;
+    private int numreg;
     Usuario user = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
 
     public FacturaBean() {
@@ -309,6 +310,14 @@ public class FacturaBean implements Serializable {
 
     public void setNumser(Numser01 numser) {
         this.numser = numser;
+    }
+
+    public int getNumreg() {
+        return numreg;
+    }
+
+    public void setNumreg(int numreg) {
+        this.numreg = numreg;
     }
 
     public List<SelectItem> getListaProveedores() {
@@ -611,6 +620,7 @@ public class FacturaBean implements Serializable {
             //**OBTENEMOS EL MAXIMO VALOR DE LA TABLA HNUMSER01**//
             Hnumser01Dao hDao = new Hnumser01DaoImp();
             String maxRegHnumser = hDao.obtenerMaximoValor().toString().replace("[", "").replace("]", "");
+            numreg = Integer.parseInt(maxRegHnumser);
             //**GUARDAMOS EN LA TABLA PAR_COMPC01**//
             ParCompc01Dao parDao = new ParCompc01Imp();
             parcompc.setCveDoc(facturaObservacion.getCvedoc());
@@ -723,8 +733,34 @@ public class FacturaBean implements Serializable {
             maxRegHnumser = "";
         }
         //**GUARDAMOS EN LA TABLA NUMSER**//
-        for (String str : listaHNSer) {
-            System.out.println(str);
+
+        String listaHN = listaHNSer.toString().replace("[", "").replace("]", "");
+        String[] lHN = listaHN.split(",");
+        int a = 0;
+        int b = 1;
+        for (int i = 0; i < listaHNSer.size() / 2; i++) {
+            Numser01Dao numserDao = new Numser01DaoImp();
+            numser.setCveArt(lHN[b].trim());
+            numser.setNumSer(lHN[a].trim());
+            numser.setStatus("D");
+            numser.setAlmacen(facturaObservacion.getIdalmacen());
+            numser.setCosto(0.0);
+            numser.setDoctoEnt("");
+            numser.setFechaEnt(facturaObservacion.getFecha());
+            numserDao.saveNumser01(numser);
+            Hnumser01Dao hnumserDao = new Hnumser01DaoImp();
+            hnumser.setCveArt(lHN[b].trim());
+            hnumser.setNumSer(lHN[a].trim());
+            hnumser.setTipMov(1);
+            hnumser.setTipDoc("M");
+            hnumser.setCveDoc(facturaObservacion.getCvedoc());
+            hnumser.setAlmacen(facturaObservacion.getIdalmacen());
+            hnumser.setRegSerie(numreg);
+            hnumser.setFecha(facturaObservacion.getFecha());
+            hnumser.setStatus("D");
+            hnumserDao.saveHmunser(hnumser);
+            a = a + 2;
+            b = b + 2;
         }
         //**GUARDAMOS EN LA TABLA HNUMSER**//
 
@@ -743,6 +779,10 @@ public class FacturaBean implements Serializable {
         clib01 = new ParCompcClib01();
         minve = new Minve01();
         listaHNSer.clear();
+        numreg = 0;
+        numser = new Numser01();
+        hnumser = new Hnumser01();
+
         //**LIMPIAMOS LOS OBJETOS**//
 
         //**LISTAMOS LA INFORMACION DE LAS SERIES SIN INFORMACIÓN CORRESPONDIENTES A LA FACTURA SELECCIONADA**//

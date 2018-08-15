@@ -773,7 +773,7 @@ public class FacturaBean implements Serializable {
         }
         //**LIMPIAMOS LOS OBJETOS**//
         compcclib01 = new CompcClib01();
-        obsdoc = new ObsDocc01();
+        obsdoc = new ObsDocc01();                                            
         lp = new Ltpd01();
         parcompc = new ParCompc01();
         clib01 = new ParCompcClib01();

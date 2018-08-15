@@ -26,6 +26,7 @@
         <mapping resource="com/etiquetas/qrsys/s/model/ParCompcClib01.hbm.xml"/>
         <mapping resource="com/etiquetas/qrsys/s/model/Almacenes01.hbm.xml"/>
         <mapping resource="com/etiquetas/qrsys/s/model/CompcClib01.hbm.xml"/>
-
+        <mapping resource="com/etiquetas/qrsys/s/model/ParFactf01.hbm.xml"/>
+        <mapping resource="com/etiquetas/qrsys/s/model/Factf01.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

@@ -23,4 +23,6 @@
     <table-filter match-name="PAR_COMPC01"/>
     <table-filter match-name="PAR_COMPC_CLIB01"/>
     <table-filter match-name="MULT01"/>
+    <table-filter match-name="FACTF01"/>
+    <table-filter match-name="PAR_FACTF01"/>
 </hibernate-reverse-engineering>

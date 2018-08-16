@@ -17,6 +17,12 @@
 
 
             <ui:define name="content">
+                <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="600000" />
+                <p:dialog style="font-size: 15px;" header="Sistema de Etiquetas Marubeni México" widgetVar="sessionTimeOutDialog" 
+                          modal="true" closable="false" width="775" height="280" resizable="false" visible="false">                    
+                    <img src="../Images/expired.png" alt=""/><br></br><br></br><br></br>
+                    <h:outputText style="color: #CC0505; font-size: 16px; " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
+                </p:dialog>
 
                 <!--INICIA FORMULARIO PARA REGISTRO DE FACTURA-->
                 <h:form id="formFactura" style="text-align: center"
@@ -36,26 +42,28 @@
                                          rowsPerPageTemplate="10,20,50,100,200,500" 
                                          rows="10" 
                                          paginator="true" 
+                                         reflow="true"
+                                         rowHover="true"
                                          currentPageReportTemplate="Facturas registradas: #{facturaBean.listarFactura.size()}"
                                          paginatorAlwaysVisible="true"
                                          value="#{facturaBean.listarFactura}" style="font-size: 12px"
                                          emptyMessage="No hay facturas...">
-                                <p:column headerText="Factura" style="width: 80px">
+                                <p:column sortBy="#{item.nofactura}" filterBy="#{item.nofactura}" headerText="Factura">
                                     <h:outputText value="#{item.nofactura}"/>
                                 </p:column>
-                                <p:column headerText="Proveedor" >
+                                <p:column sortBy="#{item.proveedor}" filterBy="#{item.proveedor}" headerText="Proveedor" >
                                     <h:outputText value="#{item.proveedor}"/>
                                 </p:column>
-                                <p:column headerText="Esquema" style="width: 100px">
+                                <p:column headerText="Esquema">
                                     <h:outputText value="#{item.esquema}"/>
                                 </p:column>
-                                <p:column headerText="T. Cambio" style="width: 60px">
+                                <p:column headerText="T. Cambio">
                                     <h:outputText value="$#{item.tipocambio}"/>
                                 </p:column>
-                                <p:column headerText="Moneda" style="width: 40px">
+                                <p:column headerText="Moneda">
                                     <h:outputText value="#{item.moneda}"/>
                                 </p:column>
-                                <p:column headerText="Almacén" style="width: 120px">
+                                <p:column sortBy="#{item.almacen}" filterBy="#{item.almacen}" headerText="Almacén">
                                     <h:outputText value="#{item.almacen}"/>
                                 </p:column>
                                 <p:column headerText="Observaciones">
@@ -130,8 +138,8 @@
                         </p:panelGrid>
                         <p:spacer width="700px" height="20px"/>
                         <p:commandButton value="" title="Guardar" update="formFactura, formFactura:mensaje" 
-                                         style="width: 30px; height:30px; background-image: url('../Images/save.png');  
-                                         background-size: 28px; background-repeat: no-repeat"
+                                         style="width: 50px; height:50px; background-image: url('../Images/save.png');  
+                                         background-size: 48px; background-repeat: no-repeat"
                                          oncomplete="PF('dlgEditar').hide()"
                                          actionListener="#{facturaBean.actualizarFactura()}"/>
                     </p:dialog>

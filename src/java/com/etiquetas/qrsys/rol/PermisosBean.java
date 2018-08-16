@@ -77,9 +77,14 @@ public class PermisosBean implements Serializable {
             item.setOutcome("/Views/Compras.jsf");
             tercerSubmenu.addElement(item);
             
-            item = new DefaultMenuItem("Movimientos");
+            item = new DefaultMenuItem("Movs-Entrada");
             item.setIcon("ui-icon-print");
-            item.setOutcome("/Views/Movimientos.jsf");
+            item.setOutcome("/Views/Entrada.jsf");
+            tercerSubmenu.addElement(item);
+            
+            item = new DefaultMenuItem("Movs-Salida");
+            item.setIcon("ui-icon-print");
+            item.setOutcome("/Views/Salida.jsf");
             tercerSubmenu.addElement(item);
             
             item = new DefaultMenuItem("Ventas");

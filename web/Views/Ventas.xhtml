@@ -6,61 +6,95 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Register Invoice SAE</title>
+        <title>Compras</title>
         <h:outputStylesheet name="css/style.css"></h:outputStylesheet>
     </h:head>
     <h:body>
         <ui:composition template="../Template/Template.xhtml">
             <ui:define name="top">
-
             </ui:define>
-
-
             <ui:define name="content">
-
+                <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="600000" />
+                <p:dialog style="font-size: 15px;" header="Sistema de Etiquetas Marubeni México" widgetVar="sessionTimeOutDialog" 
+                          modal="true" closable="false" width="775" height="280" resizable="false" visible="false">                    
+                    <img src="../Images/expired.png" alt=""/><br></br><br></br><br></br>
+                    <h:outputText style="color: #CC0505; font-size: 16px; " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
+                </p:dialog>
 
                 <h:form id="formFactura" style="text-align: center"
                         enctype="multipart/form-data">
-
                     <p:growl id="mensaje" showSummary="true" showDetail="true"></p:growl>
                     <p:separator style="height: 2px"></p:separator>
+                    <p:toolbar id="tool">
+                        <f:facet name="right">
+                            <br></br>
+                            <h3 style="color: #000017">-BUSCAR FACTURAS-VENTAS-</h3>
+                            <h:panelGrid id="pnlTool" columns="16" cellpadding="1">
+                                <p:outputLabel for="almacen" value="ALMACÉN"/>
+                                <p:selectOneMenu id="almacen" required="true"  value="#{ventasBean.departamento}"
+                                                 requiredMessage="Selecciona almacén">
+                                    <f:selectItem itemValue="" itemLabel="Selecciona almacen"/>
+                                    <f:selectItem itemValue="3" itemLabel="Zacatecas"/>
+                                    <f:selectItem itemValue="12" itemLabel="Lazaro Cardenas"/>
+                                    <f:selectItem itemValue="14" itemLabel="Hermosillo"/>
+                                    <f:selectItem itemValue="16" itemLabel="RedBurn"/>
+                                    <f:selectItem itemValue="51" itemLabel="Plata Panamericana"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="f1" value="FECHA INICIAL"/>
+                                <p:calendar id="f1" value="#{ventasBean.f1}" required="true" 
+                                            requiredMessage="Coloca fecha inicial"/>
+                                <p:outputLabel for="f2" value="FECHA FINAL"/>
+                                <p:calendar id="f2" value="#{ventasBean.f2}" required="true"
+                                            requiredMessage="Coloca fecha final"/>
+                                <p:outputLabel value="BUSCAR FACTURAS"/>
+                                <p:commandButton value="" update="formFactura:tblFactura, formFactura:mensaje, tool" 
+                                                 actionListener="#{ventasBean.buscarFacturasVentas()}"
+                                                 style="width: 50px; height:50px; background-image: url('../Images/view.png'); 
+                                                 background-size: 48px; background-repeat: no-repeat"
+                                                 title="BUSCAR FACTURAS-VENTAS"/>
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:toolbar>
                     <br></br>
+                    <h3>-LISTA DE FACTURAS-VENTAS-</h3>
 
-
-                    <h3>-COMPLETAR REGISTRO DE FACTURA SAE-</h3>
                     <p:separator style="height: 2px"></p:separator>
                     <p:layout id="capaDatosViaje" style="width: 100%; height: 550px;">
                         <p:layoutUnit id="datosConcepto" position="center" style="padding: 5px; text-align: center;">
                             <p:dataTable id="tblFactura" var="item"
-                                         value="#{facturaBean.listarFactura}" style="font-size: 11px"
+                                         sortMode="multiple"
+                                         scrollable="true" 
+                                         scrollHeight="435"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="10,20,50,100,200,500" 
+                                         rows="10" 
+                                         paginator="true" 
+                                         reflow="true"
+                                         rowHover="true"
+                                         resizeMode="fit"
+                                         paginatorAlwaysVisible="true"
+                                         currentPageReportTemplate="Total de facturas: #{ventasBean.listaFacturasV.size()}"
+                                         value="#{ventasBean.listaFacturasV}" style="font-size: 11px"
                                          emptyMessage="No hay facturas...">
-                                <p:column headerText="Factura" style="width: 60px">
-                                    <h:outputText value="#{item.nofactura}"></h:outputText>
+                                <p:ajax event="sort" skipChildren="false" />
+                                <p:column filterBy="#{item.idproveedor}" sortBy="#{item.idproveedor}" headerText="Clave Proveedor" style="width: 150px">
+                                    <h:outputText value="#{item.idproveedor}"></h:outputText>
                                 </p:column>
-                                <p:column headerText="Proveedor" >
+                                <p:column headerText="Fecha">
+                                    <h:outputText value="#{item.fecha}"></h:outputText>
+                                </p:column>
+                                <p:column filterBy="#{item.proveedor}" sortBy="#{item.proveedor}" headerText="Nombre proveedor">
                                     <h:outputText value="#{item.proveedor}"></h:outputText>
                                 </p:column>
-                                <p:column headerText="Esquema" style="width: 100px">
-                                    <h:outputText value="#{item.esquema}"></h:outputText>
-                                </p:column>
-                                <p:column headerText="T. Cambio" style="width: 60px">
-                                    <h:outputText value="$#{item.tipocambio}"></h:outputText>
-                                </p:column>
-                                <p:column headerText="Moneda" style="width: 40px">
-                                    <h:outputText value="#{item.moneda}"></h:outputText>
-                                </p:column>
-                                <p:column headerText="Almacén" style="width: 120px">
-                                    <h:outputText value="#{item.almacen}"></h:outputText>
-                                </p:column>
-                                <p:column headerText="Observaciones">
-                                    <h:outputText value="#{item.observacion}"></h:outputText>
+                                <p:column filterBy="#{item.nofactura}" sortBy="#{item.nofactura}" headerText="Factura">
+                                    <h:outputText value="#{item.nofactura}"></h:outputText>
                                 </p:column>
                                 <p:column headerText="Ver series" style="width: 30px">
                                     <p:commandButton id="btnVer" value="" title="Ver series" update="frmVerSeries" 
                                                      oncomplete="PF('dlgSeries').show()"
                                                      style="width: 30px; height:30px; background-image: url('../Images/view.png'); 
                                                      background-size: 28px; background-repeat: no-repeat"
-                                                     actionListener="#{facturaBean.listaSerie(item.nofactura)}">
+                                                     actionListener="#{ventasBean.buscarSeriesVentas(item.nofactura)}">
 
                                     </p:commandButton>
                                 </p:column>
@@ -71,52 +105,44 @@
                 </h:form>
 
                 <h:form id="frmVerSeries">
-                    <p:blockUI block="tblSeries" trigger="btnSave">   
+                    <p:blockUI block="tblSeries" trigger="btnPrint">   
                         <h4 style="font-size: 15px; color: black">Procesando, espere...</h4><br></br>
                         <p:graphicImage value="../Images/loading.gif" style="height: 120px; width: 120px; "></p:graphicImage>
                     </p:blockUI>
                     <p:growl id="mensajes" showSummary="true" showDetail="true"></p:growl>
-                    <p:dialog id="dialogoSeries" header="-SERIES-COMPLETAR REGISTRO EN SAE-" widgetVar="dlgSeries"
+                    <p:dialog id="dialogoSeries" header="-IMPRESIÓN DE SERIES-ETIQUETAS-" widgetVar="dlgSeries"
                               resizable="false" showEffect="puff" hideEffect="explode" style="margin: auto 0" modal="false">
                         <p:separator style="height: 2px"></p:separator>
                         <p:toolbar id="tool">
-                            <f:facet name="left">
-                                <!--                                <span class="ui-separator">
-                                                                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
-                                                                </span>-->
-                                <h3 style="color: #000017">-INGRESAR INFORMACIÓN FALTANTE-</h3>
-                                <h:panelGrid id="pnlTool" columns="10" cellpadding="5">
-                                    <p:outputLabel for="aduana" value="Aduana:" />
-                                    <p:inputText id="aduana" placeholder="Aduana" required="true" requiredMessage="Ingrese aduana" 
-                                                 title="Aduana" value="#{facturaBean.serieEditar.aduana}"/>
-                                    <p:outputLabel for="pedimento" value="Pedimento"/>
-                                    <p:inputMask id="pedimento" required="true"  requiredMessage="Ingrese pedimento"
-                                                 title="Pedimento" mask="99  99  9999  999999" value="#{facturaBean.serieEditar.pedimento}"/>
-                                    <p:outputLabel for="fecha" value="Fecha"/>
-                                    <p:calendar id="fecha" placeholder="Fecha de pedimento" required="true" requiredMessage="Ingrese fecha de pedimento"
-                                                title="Fecha" value="#{facturaBean.serieEditar.fechapedimento}"/>
-                                    <p:outputLabel for="lote" value="Lote"/>
-                                    <p:inputText id="lote" placeholder="Lote" required="true" requiredMessage="Ingrese lote" 
-                                                 title="Lote" value="#{facturaBean.serieEditar.lote}"/>
-                                    <p:outputLabel value=""/>
-                                    <p:commandButton id="btnSave" value="" title="Guardar cambios" 
-                                                     style="width: 30px; height:30px; background-image: url('../Images/save.png'); 
-                                                     background-size: 28px; background-repeat: no-repeat"
-                                                     actionListener="#{facturaBean.procesar()}" 
-                                                     update="pnlTool, mensajes"  icon="ui-icon-disk" />
-                                </h:panelGrid>
+                            <f:facet name="right">
+                                <span class="ui-separator">
+                                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                                </span>
+                                <p:outputLabel value="SELECCIONA PARA IMPRIMIR ETIQUETAS"/><p:spacer width="10"/>
+                                <p:commandButton id="btnPrint" value="" title="Imprimir etiquetas" 
+                                                 style="width: 30px; height:30px; background-image: url('../Images/printer.png'); 
+                                                 background-size: 28px; background-repeat: no-repeat"
+                                                 actionListener="#{facturaBean.imprimirEtiquetas()}" update="tblSeries, mensajes"/>
                             </f:facet>
                         </p:toolbar>
                         <p:separator style="height: 2px"></p:separator>
                         <p:dataTable id="tblSeries" var="serie" sortMode="multiple"
-                                     scrollable="true" scrollHeight="300px"
+                                     scrollable="true" 
+                                     scrollHeight="300"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="10,50,100" rows="10" paginator="true" paginatorPosition="top" 
-                                     value="#{facturaBean.listarSeries}" liveResize="true" style="font-size: 11px"
+                                     rowsPerPageTemplate="10,50,100" 
+                                     rows="10" 
+                                     paginator="true" 
+                                     reflow="true"
+                                     rowHover="true"
+                                     resizeMode="fit"
+                                     paginatorAlwaysVisible="true"
+                                     currentPageReportTemplate="Total de series #{ventasBean.listaSeriesV.size()}"
+                                     value="#{ventasBean.listaSeriesV}" liveResize="true" style="font-size: 11px"
                                      emptyMessage="No hay series por agregar información...">
                             <p:ajax event="sort" skipChildren="false" />
-                            <p:column headerText="Factura" filterBy="#{serie.factura.nofactura}" sortBy="#{serie.factura.nofactura}" >
-                                <h:outputText value="#{serie.factura.nofactura}"></h:outputText>
+                            <p:column headerText="Factura" filterBy="#{serie.factura}" sortBy="#{serie.factura}" >
+                                <h:outputText value="#{serie.factura}"></h:outputText>
                             </p:column>
                             <p:column headerText="Clave artículo" filterBy="#{serie.articulo}" sortBy="#{serie.articulo}">
                                 <h:outputText value="#{serie.articulo}"></h:outputText>
@@ -136,11 +162,8 @@
                             <p:column headerText="Fecha pedimento" filterBy="#{serie.fechapedimento}" sortBy="#{serie.fechapedimento}">
                                 <h:outputText value="#{serie.fechapedimento}"></h:outputText>
                             </p:column>
-                            <p:column headerText="Lote" filterBy="#{serie.lote}" sortBy="#{serie.lote}">
-                                <h:outputText value="#{serie.lote}"></h:outputText>
-                            </p:column>
                             <p:column headerText="..." style="width: 20px">
-                                <p:selectBooleanCheckbox value="#{serie.seleccionar}" >
+                                <p:selectBooleanCheckbox value="#{serie.seleccionar}">
                                     <p:ajax event="change" update="tblSeries"/>
                                 </p:selectBooleanCheckbox>                                    
                             </p:column>

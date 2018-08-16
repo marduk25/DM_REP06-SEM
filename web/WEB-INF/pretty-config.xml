@@ -20,9 +20,13 @@
 		<pattern value="/QRSysCQr/" />
 		<view-id value="/Views/Compras.jsf" />
 	</url-mapping>
-	<url-mapping id="Movimientos">
-		<pattern value="/QRSysMQr/" />
-		<view-id value="/Views/Movimientos.jsf" />
+	<url-mapping id="Movs-Entrada">
+		<pattern value="/QRSysME/" />
+		<view-id value="/Views/Entrada.jsf" />
+	</url-mapping>
+	<url-mapping id="Movs-Salida">
+		<pattern value="/QRSysMS/" />
+		<view-id value="/Views/Salida.jsf" />
 	</url-mapping>
 	<url-mapping id="Ventas">
 		<pattern value="/QRSysVQr/" />

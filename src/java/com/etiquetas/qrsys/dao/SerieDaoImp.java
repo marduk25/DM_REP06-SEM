@@ -148,7 +148,7 @@ public class SerieDaoImp implements SerieDao {
     public List<Serie> listaDeSeries(String nofactura) {
         List<Serie> lista = null;
         Session session = HibernateUtil.getSessionfactory().openSession();
-        Transaction t = session.beginTransaction();;
+        Transaction t = session.beginTransaction();
         try {
             Query<?> q = session.createQuery("SELECT serie FROM Serie as serie INNER JOIN serie.factura as factura WHERE factura.nofactura=:factura");
             q.setParameter("factura", nofactura);
@@ -172,7 +172,7 @@ public class SerieDaoImp implements SerieDao {
         Session session = HibernateUtil.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
         try {
-            Query<?> q = session.createQuery("SELECT serie FROM Serie as serie INNER JOIN serie.factura as factura WHERE factura.nofactura=:factura AND serie.aduana IS NOT NULL AND serie.impreso <=1");
+            Query<?> q = session.createQuery("SELECT serie FROM Serie as serie INNER JOIN serie.factura as factura WHERE factura.nofactura=:factura AND factura.tipo='Compra' AND factura.subtipo='Entrada' AND serie.aduana IS NOT NULL AND serie.impreso <=1");
             q.setParameter("factura", nofactura);
             lista = (List<Serie>) q.list();
             t.commit();
@@ -191,7 +191,7 @@ public class SerieDaoImp implements SerieDao {
     public void updateNoImpresion(String serie) {
         Session session = HibernateUtil.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
-        Query<?> q = session.createQuery("UPDATE Serie SET impreso=impreso+1 WHERE serie=:serie");
+        Query<?> q = session.createQuery("UPDATE Serie SET impreso=impreso+1, seleccionar=1 WHERE serie=:serie");
         q.setParameter("serie", serie);
         try {
             q.executeUpdate();
@@ -251,20 +251,20 @@ public class SerieDaoImp implements SerieDao {
             q.executeUpdate();
             t.commit();
             session.close();
-        } catch (Exception e) {         
+        } catch (Exception e) {
             t.rollback();
         }
     }
 
     @Override
     public List<String> listarSeriesSaeEstado1(int user, String pedimento) {
-        List<String> lista=null;
-        Session session  = HibernateUtil.getSessionfactory().openSession();
+        List<String> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
         try {
             Query q = session.createQuery("SELECT serie FROM Serie WHERE idusuario=:user AND pedimento=:pedimento AND sae=0");
-            q.setParameter("user",user);
-            q.setParameter("pedimento",pedimento);
+            q.setParameter("user", user);
+            q.setParameter("pedimento", pedimento);
             lista = q.list();
             t.commit();
             session.close();
@@ -272,6 +272,89 @@ public class SerieDaoImp implements SerieDao {
             t.rollback();
         }
         return lista;
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public List<Serie> listaSeriesImprTrasEntrada(String nofactura) {
+        List<Serie> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Query<?> q = session.createQuery("SELECT serie FROM Serie as serie INNER JOIN serie.factura as factura WHERE factura.nofactura=:factura AND factura.tipo='Traspaso' AND factura.subtipo='Entrada' AND serie.aduana IS NOT NULL AND serie.impreso <=1");
+            q.setParameter("factura", nofactura);
+            lista = (List<Serie>) q.list();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public List<Serie> listaSeriesImprTrasSalida(String nofactura) {
+        List<Serie> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Query<?> q = session.createQuery("SELECT serie FROM Serie as serie INNER JOIN serie.factura as factura WHERE factura.nofactura=:factura AND factura.tipo='Traspaso' AND factura.subtipo='Salida' AND serie.aduana IS NOT NULL AND serie.impreso <=1");
+            q.setParameter("factura", nofactura);
+            lista = (List<Serie>) q.list();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public List<Serie> listarSeriesImprVentas(String nofactura) {
+        List<Serie> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Query<?> q = session.createQuery("SELECT serie FROM Serie as serie INNER JOIN serie.factura as factura WHERE factura.nofactura=:factura AND factura.tipo='Venta' AND factura.subtipo='Salida' AND serie.aduana IS NOT NULL AND serie.impreso <=1");
+            q.setParameter("factura", nofactura);
+            lista = (List<Serie>) q.list();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            t.rollback();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return lista;
+    }
+
+    @Override
+    public void updateSerieEstadoCero(String serie) {
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        Query<?> q = session.createQuery("UPDATE Serie SET seleccionar=0 WHERE serie=:serie");
+        q.setParameter("serie", serie);
+        try {
+            q.executeUpdate();
+            t.commit();
+            session.close();
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "SISTEMA DE ETIQUETAS", "ERROR" + e.getMessage()));
+            t.rollback();
+        }
     }
 
 }

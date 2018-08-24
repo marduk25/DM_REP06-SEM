@@ -31,9 +31,17 @@ public interface SerieDao {
     public List<Serie> listarSeriesSae(int user, String pedimento, String art);
 
     public List<String> listarSeriesSaeRegistro(int user, String pedimento);
-    
+
     public void updateSerieSae1(String serie);
-    
+
     public List<String> listarSeriesSaeEstado1(int user, String pedimento);
+
+    public List<Serie> listaSeriesImprTrasEntrada(String nofactura);
+
+    public List<Serie> listaSeriesImprTrasSalida(String nofactura);
+
+    public List<Serie> listarSeriesImprVentas(String nofactura);
+
+    public void updateSerieEstadoCero(String serie);
 
 }

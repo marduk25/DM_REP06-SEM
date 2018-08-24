@@ -33,6 +33,23 @@
         </div>
 
         <div id="content" class="center_content">
+            <span>
+                <h:form>
+                    <p:outputLabel style="color: #ffffff; font-weight: bold; font-size: 13px" value="#{loginBean.usuario.nombre}"/><br></br>    
+                    <p:outputLabel style="color: #ffffff; font-weight: bold; font-size: 13px" value="#{loginBean.usuario.perfil.descripcion}"/><br></br>    
+                    <p:commandLink id="salir" 
+                                   title="CERRAR SESSIÓN"
+                                   action="/login?faces-redirect=true" 
+                                   actionListener="#{loginBean.cerrarSesion()}">
+                        <h:graphicImage url="/Images/poweroff.png" style="height: 35px"/> 
+                    </p:commandLink>
+                </h:form>                       
+            </span>
+            <div id="sessionUsuario">
+
+
+
+            </div>
             <ui:insert name="content">Content</ui:insert>
         </div>
         <div id="bottom">

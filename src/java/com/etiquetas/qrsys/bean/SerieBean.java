@@ -339,6 +339,8 @@ public class SerieBean implements Serializable {
                 factura.setNofactura(fac);
                 java.util.Date fechaActual = new Date();
                 factura.setFecha(fechaActual);
+                factura.setTipo("Compra");
+                factura.setSubtipo("Entrada");
                 fDao.saveFactura(factura);
                 factura = new Factura();
                 listaBuscarFactura.clear();

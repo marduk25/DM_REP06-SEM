@@ -17,7 +17,7 @@ public class FacturaDaoImp implements FacturaDao {
         List<Factura> lista = null;
         Session session = HibernateUtil.getSessionfactory().openSession();
         Transaction t = session.beginTransaction();
-        String hql = "FROM Factura";
+        String hql = "FROM Factura WHERE tipo='Compra' AND subtipo='Entrada'";
         try {
             lista = session.createQuery(hql).list();
             t.commit();
@@ -26,6 +26,8 @@ public class FacturaDaoImp implements FacturaDao {
         }
         return lista;
     }
+    
+  
 
     @Override
     public List<Factura> listaBuscarFactura(String nofactura) {
@@ -122,5 +124,51 @@ public class FacturaDaoImp implements FacturaDao {
 
     }
 
+    @Override
+    public List<Factura> listaFacturaVenta() {
+        List<Factura> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM Factura WHERE tipo='Venta' AND subtipo='Salida'";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
+    @Override
+    public List<Factura> listaTraspasoEntrada() {
+        List<Factura> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM Factura WHERE tipo='Traspaso' AND subtipo='Entrada'";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
+    @Override
+    public List<Factura> listaTraspasoSalida() {
+        List<Factura> lista = null;
+        Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "FROM Factura WHERE tipo='Traspaso' AND subtipo='Salida'";
+        try {
+            lista = session.createQuery(hql).list();
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+        }
+        return lista;
+    }
+
+   
 
 }

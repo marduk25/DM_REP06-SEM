@@ -34,99 +34,128 @@ public class PermisosBean implements Serializable {
     public void init() {
         model = new DefaultMenuModel();
         // Inicia perfil administrador
-        if (us.getPerfil().getIdperfil() == 1) {
-            // Primer submenu
-            DefaultSubMenu primerSubmenu = new DefaultSubMenu("INICIO");
+        switch (us.getPerfil().getIdperfil()) {
+            case 1: {
+                //**PERFIL ADMINISTRADOR**//
+                // Primer submenu
+                DefaultSubMenu primerSubmenu = new DefaultSubMenu("INICIO");
+                DefaultMenuItem item = new DefaultMenuItem("Inicio");
+                item.setOutcome("/Views/Home.jsf");
+                item.setIcon("ui-icon-home");
+                primerSubmenu.addElement(item);
+                model.addElement(primerSubmenu);
+                // Segundo submenu
+                DefaultSubMenu segundoSubmenu = new DefaultSubMenu("ARCHIVO");
+                item = new DefaultMenuItem("Cargar Excel");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Home.jsf");
+                segundoSubmenu.addElement(item);
+                model.addElement(segundoSubmenu);
+                // Segundo submenu
+                DefaultSubMenu septimoSubmenu = new DefaultSubMenu("REGISTRAR");
+                item = new DefaultMenuItem("Registrar compra");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Register.jsf");
+                septimoSubmenu.addElement(item);
+                model.addElement(septimoSubmenu);
+                // Tercer submenu
+                break;
+            }
+            case 2: {
+                //**PERFIL USUARIO**//
+                // Primer submenu
+                DefaultSubMenu primerSubmenu = new DefaultSubMenu("INICIO");
+                DefaultMenuItem item = new DefaultMenuItem("Inicio");
+                item.setOutcome("/Views/Home.jsf");//////////////////////////////////
+                item.setIcon("ui-icon-home");
+                primerSubmenu.addElement(item);
+                model.addElement(primerSubmenu);
+                // Segundo submenu
+                DefaultSubMenu septimoSubmenu = new DefaultSubMenu("REGISTRAR");
+                item = new DefaultMenuItem("Registrar series");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Sae.jsf");
+                septimoSubmenu.addElement(item);
+                model.addElement(septimoSubmenu);
+                // Tercer submenu
+                DefaultSubMenu tercerSubmenu = new DefaultSubMenu("IMPRIMIR ETIQUETAS");
+                item = new DefaultMenuItem("Compras");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Compras.jsf");
+                tercerSubmenu.addElement(item);
+                item = new DefaultMenuItem("Movs-Entrada");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Entrada.jsf");
+                tercerSubmenu.addElement(item);
+                item = new DefaultMenuItem("Movs-Salida");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Salida.jsf");
+                tercerSubmenu.addElement(item);
+                item = new DefaultMenuItem("Ventas");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Ventas.jsf");
+                tercerSubmenu.addElement(item);
+                model.addElement(tercerSubmenu);
 
-            DefaultMenuItem item = new DefaultMenuItem("Inicio");
-            item.setOutcome("/Views/Upload2.jsf");
-            item.setIcon("ui-icon-home");
-            primerSubmenu.addElement(item);
+                break;
+            }
+            case 3:
+                // Primer submenu
+                DefaultSubMenu primerSubmenu = new DefaultSubMenu("INICIO");
+                DefaultMenuItem item = new DefaultMenuItem("Inicio");
+                item.setOutcome("/Views/Home.jsf");
+                item.setIcon("ui-icon-home");
+                primerSubmenu.addElement(item);
+                model.addElement(primerSubmenu);
+                // Segundo submenu
+                DefaultSubMenu segundoSubmenu = new DefaultSubMenu("ARCHIVO");
+                item = new DefaultMenuItem("Cargar Excel");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Home.jsf");
+                segundoSubmenu.addElement(item);
+                model.addElement(segundoSubmenu);
+                // Segundo submenu
+                DefaultSubMenu septimoSubmenu = new DefaultSubMenu("REGISTRAR");
+                item = new DefaultMenuItem("Registrar series");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Sae.jsf");
+                septimoSubmenu.addElement(item);
+                item = new DefaultMenuItem("Registrar compra");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Register.jsf");
+                septimoSubmenu.addElement(item);
+                model.addElement(septimoSubmenu);
+                // Tercer submenu
+                DefaultSubMenu tercerSubmenu = new DefaultSubMenu("IMPRIMIR ETIQUETAS");
+                item = new DefaultMenuItem("Compras");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Compras.jsf");
+                tercerSubmenu.addElement(item);
+                item = new DefaultMenuItem("Movs-Entrada");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Entrada.jsf");
+                tercerSubmenu.addElement(item);
+                item = new DefaultMenuItem("Movs-Salida");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Salida.jsf");
+                tercerSubmenu.addElement(item);
+                item = new DefaultMenuItem("Ventas");
+                item.setIcon("ui-icon-print");
+                item.setOutcome("/Views/Ventas.jsf");
+                tercerSubmenu.addElement(item);
+                model.addElement(tercerSubmenu);
 
-            model.addElement(primerSubmenu);
-
-            // Segundo submenu
-            DefaultSubMenu segundoSubmenu = new DefaultSubMenu("ARCHIVO");
-
-            item = new DefaultMenuItem("Cargar Excel");
-            item.setIcon("ui-icon-disk");
-            item.setOutcome("/Views/Home.jsf");
-            segundoSubmenu.addElement(item);
-
-            model.addElement(segundoSubmenu);
-
-            // Segundo submenu
-            DefaultSubMenu septimoSubmenu = new DefaultSubMenu("REGISTRAR SAE");
-
-            item = new DefaultMenuItem("Registrar series");
-            item.setIcon("ui-icon-disk");
-            item.setOutcome("/Views/Sae.jsf");
-            septimoSubmenu.addElement(item);
-
-            item = new DefaultMenuItem("Registrar compra");
-            item.setIcon("ui-icon-disk");
-            item.setOutcome("/Views/Register.jsf");
-            septimoSubmenu.addElement(item);
-
-            model.addElement(septimoSubmenu);
-
-            // Tercer submenu
-            DefaultSubMenu tercerSubmenu = new DefaultSubMenu("IMPRIMIR ETIQUETAS");
-            item = new DefaultMenuItem("Compras");
-            item.setIcon("ui-icon-print");
-            item.setOutcome("/Views/Compras.jsf");
-            tercerSubmenu.addElement(item);
-            
-            item = new DefaultMenuItem("Movs-Entrada");
-            item.setIcon("ui-icon-print");
-            item.setOutcome("/Views/Entrada.jsf");
-            tercerSubmenu.addElement(item);
-            
-            item = new DefaultMenuItem("Movs-Salida");
-            item.setIcon("ui-icon-print");
-            item.setOutcome("/Views/Salida.jsf");
-            tercerSubmenu.addElement(item);
-            
-            item = new DefaultMenuItem("Ventas");
-            item.setIcon("ui-icon-print");
-            item.setOutcome("/Views/Ventas.jsf");
-            tercerSubmenu.addElement(item);
-            
-
-            model.addElement(tercerSubmenu);
-
-
-
-            // Quinto submenu
-            DefaultSubMenu sextoSubmenu = new DefaultSubMenu("USUARIOS");
-            item = new DefaultMenuItem("Usuarios");
-            item.setIcon("ui-icon-disk");
-            item.setOutcome("/Views/Home.jsf");
-            sextoSubmenu.addElement(item);
-
-            model.addElement(sextoSubmenu);
-            // Finaliza perfil administrador
-
-        } else if (us.getPerfil().getIdperfil() == 2) {
-            // Primer submenu
-            DefaultSubMenu primerSubmenu = new DefaultSubMenu("Inicio");
-
-            DefaultMenuItem item = new DefaultMenuItem("Inicio");
-            item.setOutcome("/Views/Home.jsf");
-            item.setIcon("ui-icon-home");
-            primerSubmenu.addElement(item);
-
-            model.addElement(primerSubmenu);
-
-            // Tercer submenu
-            DefaultSubMenu tercerSubmenu = new DefaultSubMenu("Reportes");
-            item = new DefaultMenuItem("Viajes concluídos");
-            item.setIcon("ui-icon-disk");
-            item.setOutcome("/Views/Home.jsf");
-            tercerSubmenu.addElement(item);
-
-            model.addElement(tercerSubmenu);
-
+                // Quinto submenu
+                DefaultSubMenu sextoSubmenu = new DefaultSubMenu("USUARIOS");
+                item = new DefaultMenuItem("Usuarios");
+                item.setIcon("ui-icon-disk");
+                item.setOutcome("/Views/Usuarios.jsf");
+                sextoSubmenu.addElement(item);
+                model.addElement(sextoSubmenu);
+                // Finaliza perfil administrador
+                break;
+            default:
+                break;
         }
 
     }

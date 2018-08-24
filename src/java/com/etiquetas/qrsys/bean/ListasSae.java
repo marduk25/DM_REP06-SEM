@@ -17,20 +17,21 @@ public class ListasSae extends Conexion {
         ResultSet rs;
         try {
             this.Conectar();
-            PreparedStatement st = this.getCn().prepareCall("SELECT F.CVE_DOC, F.CVE_CLPV, F.FECHA_DOC, P.NOMBRE FROM FACTF01 AS F, PROV01 AS P "
-                    + "WHERE F.CVE_CLPV=P.CLAVE AND F.FECHA_DOC>='" + f1 + "' AND F.FECHA_DOC<='" + f2 + "' AND F.NUM_ALMA='" + almacen + "'");
+            PreparedStatement st = this.getCn().prepareCall("SELECT F.CVE_DOC, F.RFC, F.FECHA_DOC, C.NOMBRE FROM FACTF01 AS F, CLIE01 AS C WHERE F.RFC=C.RFC AND "
+                    + " F.FECHA_DOC>='" + f1 + "' AND F.FECHA_DOC<='" + f2 + "' AND F.NUM_ALMA='" + almacen + "'");
             rs = st.executeQuery();
             lista = new ArrayList<>();
             while (rs.next()) {
                 Factura fVentas = new Factura();
                 fVentas.setNofactura(rs.getString("CVE_DOC"));
-                fVentas.setIdproveedor(rs.getString("CVE_CLPV"));
+                fVentas.setIdproveedor(rs.getString("RFC"));
                 fVentas.setFecha(rs.getDate("FECHA_DOC"));
                 fVentas.setProveedor(rs.getString("NOMBRE"));
                 lista.add(fVentas);
             }
             this.Cerrar();
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return lista;
     }

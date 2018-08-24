@@ -32,4 +32,8 @@
 		<pattern value="/QRSysVQr/" />
 		<view-id value="/Views/Ventas.jsf" />
 	</url-mapping>
+	<url-mapping id="Usuarios">
+		<pattern value="/QRSysUrx/" />
+		<view-id value="/Views/Usuarios.jsf" />
+	</url-mapping>
 </pretty-config>

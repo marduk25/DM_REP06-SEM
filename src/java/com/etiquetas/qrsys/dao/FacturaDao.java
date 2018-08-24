@@ -6,7 +6,7 @@ import java.util.List;
 public interface FacturaDao {
 
     public List<Factura> listaFactura();
-
+   
     public List<Factura> listaBuscarFactura(String nofactura);
 
     public Factura obtenerIdFactura(Factura factura);
@@ -18,5 +18,11 @@ public interface FacturaDao {
     public void updateFactura(Factura factura);
 
     public void deleteFactura(Factura factura);
+
+    public List<Factura> listaFacturaVenta();
+    
+    public List<Factura> listaTraspasoEntrada();
+    
+    public List<Factura> listaTraspasoSalida();
 
 }

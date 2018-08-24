@@ -3,17 +3,34 @@ package com.etiquetas.qrsys.bean;
 import com.etiquetas.qrsys.dao.*;
 import com.etiquetas.qrsys.s.model.*;
 import com.etiquetas.qrsys.e.model.*;
+import com.etiquetas.qrsys.jasper.QrPreview;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.servlet.ServletContext;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "facturaBean")
@@ -58,6 +75,8 @@ public class FacturaBean implements Serializable {
     private Numser01 numser;
     private List<String> listaHNSer;
     private int numreg;
+    private List<String> listaSeriesEstado1;
+    private String pathReporte = "";
     Usuario user = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
 
     public FacturaBean() {
@@ -318,6 +337,22 @@ public class FacturaBean implements Serializable {
 
     public void setNumreg(int numreg) {
         this.numreg = numreg;
+    }
+
+    public List<String> getListaSeriesEstado1() {
+        return listaSeriesEstado1;
+    }
+
+    public void setListaSeriesEstado1(List<String> listaSeriesEstado1) {
+        this.listaSeriesEstado1 = listaSeriesEstado1;
+    }
+
+    public String getPathReporte() {
+        return pathReporte;
+    }
+
+    public void setPathReporte(String pathReporte) {
+        this.pathReporte = pathReporte;
     }
 
     public List<SelectItem> getListaProveedores() {
@@ -773,7 +808,7 @@ public class FacturaBean implements Serializable {
         }
         //**LIMPIAMOS LOS OBJETOS**//
         compcclib01 = new CompcClib01();
-        obsdoc = new ObsDocc01();                                            
+        obsdoc = new ObsDocc01();
         lp = new Ltpd01();
         parcompc = new ParCompc01();
         clib01 = new ParCompcClib01();
@@ -784,7 +819,6 @@ public class FacturaBean implements Serializable {
         hnumser = new Hnumser01();
 
         //**LIMPIAMOS LOS OBJETOS**//
-
         //**LISTAMOS LA INFORMACION DE LAS SERIES SIN INFORMACIÓN CORRESPONDIENTES A LA FACTURA SELECCIONADA**//
         listaSerie(invoice.getNofactura());
         serieEditar = new Serie();
@@ -814,9 +848,10 @@ public class FacturaBean implements Serializable {
         }
     }
 
-    public void imprimirEtiquetas() {
+    public void imprimirEtiquetas() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
         this.contador = 0;
         this.noFacturaImpresion = null;
+        this.listaSeriesEstado1 = new ArrayList<>();//para  actualizar el estado seleccionar a 0
         for (int i = 0; i < listaSeriesImpresion.size(); i++) {
             if (listaSeriesImpresion.get(i).getSeleccionar().equals(TRUE)) {
                 this.etiqueta.generarQR(listaSeriesImpresion.get(i).getSerie(), listaSeriesImpresion.get(i).getFactura().getNofactura(),
@@ -825,17 +860,40 @@ public class FacturaBean implements Serializable {
                         listaSeriesImpresion.get(i).getFechapedimento().toString());
                 SerieDao sDao = new SerieDaoImp();
                 sDao.updateNoImpresion(listaSeriesImpresion.get(i).getSerie());
+                listaSeriesEstado1.add(listaSeriesImpresion.get(i).getSerie());
                 this.noFacturaImpresion = listaSeriesImpresion.get(i).getFactura().getNofactura();
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "SISTEMA DE ETIQUETAS", "Etiqueta procesada con serie no: ".concat(listaSeriesImpresion.get(i).getSerie())));
+                //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "SISTEMA DE ETIQUETAS", "Etiqueta procesada con serie no: ".concat(listaSeriesImpresion.get(i).getSerie())));
             } else {
                 this.contador++;
             }
         }
         listarSeriesImpresion(noFacturaImpresion);
+        //**ABRIMOS EL DIALOGO PARA IMPRIMIR**//
 
+        RequestContext.getCurrentInstance().execute("PF('dlgImpresion').show()");
         if (this.contador == listaSeriesImpresion.size()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "SISTEMA DE ETIQUETAS", "Selecciona etiquetas"));
         }
     }
+    
+        public void regresarEstadoFalse() {
+        String dato = listaSeriesEstado1.toString().replace("[", "").replace("]", "");
+        String[] info = dato.split(",");
+        for (int i = 0; i < listaSeriesEstado1.size(); i++) {
+            SerieDao sDao = new SerieDaoImp();
+            sDao.updateSerieEstadoCero(info[i].trim());
+        }
+        listarSeriesImpresion(noFacturaImpresion);
+    }
 
+    public void imprimirQR() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
+        //this.pathReporte="/Report/QRreport.jasper";
+        QrPreview reporte = new QrPreview();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+        String ruta = servletContext.getRealPath("/Report/QR.jasper");
+        reporte.getReporte(ruta, 1);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+    
 }

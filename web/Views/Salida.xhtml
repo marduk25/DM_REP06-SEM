@@ -16,7 +16,7 @@
             <ui:define name="content">
                 <p:idleMonitor  onactive="PF('sessionTimeOutDialog').show()" timeout="600000" />
                 <p:dialog style="font-size: 15px;" header="Sistema de Etiquetas Marubeni México" widgetVar="sessionTimeOutDialog" 
-                          modal="true" closable="false" width="775" height="280" resizable="false" visible="false">                    
+                          modal="true" closable="false" width="900" height="500" resizable="false" visible="false">                    
                     <img src="../Images/expired.png" alt=""/><br></br><br></br><br></br>
                     <h:outputText style="color: #CC0505; font-size: 16px; " value="Tu sesión actual ha expirado, para continuar cierra esta ventana o presiona F5 y vuelve a iniciar sesión." />
                 </p:dialog>
@@ -94,7 +94,7 @@
                                                      oncomplete="PF('dlgSeries').show()"
                                                      style="width: 30px; height:30px; background-image: url('../Images/view.png'); 
                                                      background-size: 28px; background-repeat: no-repeat"
-                                                     actionListener="#{traspasosBean.buscarSeriesTraspasosSalida(item.nofactura)}">
+                                                     actionListener="#{traspasosBean.listarSeriesimpresionSalida(item.nofactura)}">
 
                                     </p:commandButton>
                                 </p:column>
@@ -111,7 +111,9 @@
                     </p:blockUI>
                     <p:growl id="mensajes" showSummary="true" showDetail="true"></p:growl>
                     <p:dialog id="dialogoSeries" header="-IMPRESIÓN DE SERIES-ETIQUETAS-" widgetVar="dlgSeries"
-                              resizable="false" showEffect="puff" hideEffect="explode" style="margin: auto 0" modal="false">
+                              resizable="false" 
+                              maximizable="true"
+                              showEffect="slide" hideEffect="drop" style="margin: auto 0" modal="false">
                         <p:separator style="height: 2px"></p:separator>
                         <p:toolbar id="tool">
                             <f:facet name="right">
@@ -122,7 +124,7 @@
                                 <p:commandButton id="btnPrint" value="" title="Imprimir etiquetas" 
                                                  style="width: 30px; height:30px; background-image: url('../Images/printer.png'); 
                                                  background-size: 28px; background-repeat: no-repeat"
-                                                 actionListener="#{facturaBean.imprimirEtiquetas()}" update="tblSeries, mensajes"/>
+                                                 actionListener="#{traspasosBean.imprimirEtiquetasSalida()}" update="tblSeries, mensajes"/>
                             </f:facet>
                         </p:toolbar>
                         <p:separator style="height: 2px"></p:separator>
@@ -137,12 +139,15 @@
                                      rowHover="true"
                                      resizeMode="fit"
                                      paginatorAlwaysVisible="true"
-                                     currentPageReportTemplate="Total de series #{traspasosBean.listaSeriesV.size()}"
-                                     value="#{traspasosBean.listaSeriesV}" liveResize="true" style="font-size: 11px"
+                                     currentPageReportTemplate="Total de series #{traspasosBean.listaSeriesImpresion.size()}"
+                                     value="#{traspasosBean.listaSeriesImpresion}" liveResize="true" style="font-size: 11px"
                                      emptyMessage="No hay series por agregar información...">
                             <p:ajax event="sort" skipChildren="false" />
-                            <p:column headerText="Factura" filterBy="#{serie.factura}" sortBy="#{serie.factura}" >
-                                <h:outputText value="#{serie.factura}"></h:outputText>
+                            <p:column headerText="No. impresión">
+                                <h:outputText value="#{serie.impreso}"/>
+                            </p:column>
+                            <p:column headerText="Factura" filterBy="#{serie.factura.nofactura}" sortBy="#{serie.factura.nofactura}" >
+                                <h:outputText value="#{serie.factura.nofactura}"></h:outputText>
                             </p:column>
                             <p:column headerText="Clave artículo" filterBy="#{serie.articulo}" sortBy="#{serie.articulo}">
                                 <h:outputText value="#{serie.articulo}"></h:outputText>
@@ -169,9 +174,38 @@
                             </p:column>
                         </p:dataTable>
                     </p:dialog>
+                    <p:dialog id="dialogoImpresion" 
+                              header="-IMPRESIÓN DE SERIES-ETIQUETAS-" 
+                              widgetVar="dlgImpresion"
+                              resizable="false" 
+                              showEffect="puff" 
+                              hideEffect="explode" 
+                              closable="false"
+                              style="margin: auto 0" modal="false">
+                        <p:panelGrid columns="4">
+                            <p:outputLabel value="VISUALIZAR IMPRESIÓN"/>
+                            <h:commandLink value="" 
+                                           title="VISUALIZAR IMPRESIÓN"
+                                           actionListener="#{facturaBean.imprimirQR()}" 
+                                           target="iframe_a">
+                                <h:graphicImage url="/Images/view.png" style="height: 40px"/> 
+                            </h:commandLink>
+                            <p:outputLabel value="CERRAR IMPRESIÓN"/>
+                            <p:commandButton value="" 
+                                             title="CERRAR IMPRESIÓN"
+                                             actionListener="#{traspasosBean.regresarEstadoSalidaFalse()}"
+                                             oncomplete="PF('dlgImpresion').hide()"
+                                             update="frmVerSeries:tblSeries"
+                                             style="width: 40px; height:40px; background-image: url('../Images/Close.png'); 
+                                             background-size: 38px; background-repeat: no-repeat"/>
+                        </p:panelGrid>
+                        <br></br>
+                        <iframe src="" 
+                                scrolling="auto" height="100%" width="105%" name="iframe_a">
+                        </iframe>
+
+                    </p:dialog>
                 </h:form>
-
-
             </ui:define>
             <ui:define name="bottom">
             </ui:define>

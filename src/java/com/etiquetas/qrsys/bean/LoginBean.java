@@ -67,7 +67,18 @@ public class LoginBean implements Serializable {
             loggedIn = true;
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", this.usuario);
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido", this.usuario.getNombre());
-            ruta = "/WebAppEtiquetas/Views/Home.jsf";
+            switch (this.usuario.getPerfil().getIdperfil()) {
+                case 1:
+                    ruta = "/WebAppEtiquetas/Views/Home.jsf";
+                    break;
+                case 2:
+                    ruta = "/WebAppEtiquetas/Views/Sae.jsf";
+                    break;
+                default:
+                    ruta = "/WebAppEtiquetas/Views/Home.jsf";
+                    break;
+            }
+
         } else {
             loggedIn = false;
 

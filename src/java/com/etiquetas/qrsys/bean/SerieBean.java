@@ -62,6 +62,7 @@ public class SerieBean implements Serializable {
     private List<String> listaSeriesDuplicadas;
     private List<String> listaArticulosInexistentes;
     private int registrosNuevos = 0;
+    private String deleteFact;
 
     Usuario user = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
 
@@ -188,8 +189,14 @@ public class SerieBean implements Serializable {
     public List<String> getListaArticulosInexistentes() {
         return listaArticulosInexistentes;
     }
-    
-    
+
+    public String getDeleteFact() {
+        return deleteFact;
+    }
+
+    public void setDeleteFact(String deleteFact) {
+        this.deleteFact = deleteFact;
+    }
 
     public void obtener(List<List<XSSFCell>> cellDataList) throws SQLException {
         listar = new ArrayList<>();
@@ -327,7 +334,7 @@ public class SerieBean implements Serializable {
     }
 
     public void buscarArticulo(String art, String fac, String ser) throws SQLException {
-
+        this.deleteFact = fac;
         Inve01Dao iDao = new InveDaoImp();
         listarDesc = iDao.listaInve01(art);
         for (int i = 0; i < listarDesc.size(); i++) {
@@ -362,6 +369,12 @@ public class SerieBean implements Serializable {
             factura = new Factura();
             listaBuscarFactura.clear();
         }
+    }
+
+    public void borrarFactura() {
+        FacturaDao fDao = new FacturaDaoImp();
+        fDao.borrarFactura(this.deleteFact);
+        this.deleteFact = null;
     }
 
 }

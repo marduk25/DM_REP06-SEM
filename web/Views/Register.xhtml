@@ -86,14 +86,14 @@
                                         <f:setPropertyActionListener target="#{facturaBean.factura}" value="#{item}"/>
                                     </p:commandButton>
                                 </p:column>
-                                <p:column headerText="Borrar" style="width: 30px">
+<!--                                <p:column headerText="Borrar" style="width: 30px">
                                     <p:commandButton id="btnBorrar" value="" title="Borrar factura" update="frmBorrarFactura" 
                                                      oncomplete="PF('dlgBorrarFactura').show()"
                                                      style="width: 30px; height:30px; background-image: url('../Images/delete.png'); 
                                                      background-size: 28px; background-repeat: no-repeat">
                                         <f:setPropertyActionListener target="#{facturaBean.factura}" value="#{item}"/>
                                     </p:commandButton>
-                                </p:column>
+                                </p:column>-->
                             </p:dataTable>
                         </p:layoutUnit>                              
                     </p:layout>
@@ -150,7 +150,7 @@
                 <h:form id="frmVerSeries">
                     <p:growl id="mensajeBorrar" showSummary="true" showDetail="true"></p:growl>
                     <p:dialog id="dialogoSeries" header="Lista de series" widgetVar="dlgSeries"
-                              resizable="false" showEffect="scale" hideEffect="explode" modal="false">
+                              resizable="false" showEffect="slide" hideEffect="drop" modal="false">
                         <p:dataTable id="tblSeries" var="serie" 
                                      sortMode="multiple"
                                      scrollable="true" 
@@ -176,7 +176,7 @@
                             <p:column  headerText="Serie" filterBy="#{serie.serie}" sortBy="#{serie.serie}">
                                 <h:outputText id="se" value="#{serie.serie}"/>
                             </p:column>
-                            <p:column headerText="Borrar" style="width: 30px">
+<!--                            <p:column headerText="Borrar" style="width: 30px">
                                 <p:commandButton id="btnBorrar" value="" title="Borrar serie"     
                                                  oncomplete="PF('dlgBorrarSerie').show()"
                                                  update="frmBorrarFactura"
@@ -184,11 +184,11 @@
                                                  background-size: 28px; background-repeat: no-repeat">
                                     <f:setPropertyActionListener target="#{facturaBean.serie}" value="#{serie}"/>
                                 </p:commandButton>
-                            </p:column>
+                            </p:column>-->
                         </p:dataTable>
                     </p:dialog>
                     <p:dialog id="dialogoBorrarSeries" header="Borrar serie" widgetVar="dlgBorrarSerie"
-                              resizable="false" showEffect="scale" hideEffect="explode" modal="false"
+                              resizable="false" showEffect="slide" hideEffect="drop" modal="false"
                               style="font-size: 15px">
                         <p:spacer width="20px"/>
                         <p:outputLabel value="¿Borrar factura?"/>
@@ -205,7 +205,7 @@
                 <!--INICIA FORMULARIO PARA BORRAR FACTURA-->
                 <h:form id="frmBorrarFactura">
                     <p:dialog id="dialogoBorrarFactura" header="Borrar factura" widgetVar="dlgBorrarFactura"
-                              resizable="false" showEffect="scale" hideEffect="explode" modal="false"
+                              resizable="false" showEffect="slide" hideEffect="drop" modal="false"
                               style="font-size: 15px">
                         <p:spacer width="20px"/>
                         <p:outputLabel value="¿Borrar factura?"/>

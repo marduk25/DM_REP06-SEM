@@ -31,7 +31,6 @@
                     <p:growl id="mensaje" showSummary="true" showDetail="true"/>
                     <p:separator style="height: 2px"></p:separator>
                     <p:fileUpload allowTypes="/(\.|\/)(xls|xlsx)$/" 
-                                  fileLimit="1"
                                   invalidFileMessage="Archivos permitidos: Excel"
                                   fileLimitMessage="Carga de archivos permitidos: 1"
                                   label="Seleccionar archivo de Excel" 
@@ -93,8 +92,13 @@
 
                 <!--INICIA FORMUMARIO PARA VER EL ESTATUS DE LAS SERIES INGRESADAS-->
                 <h:form id="frmEstatus">
+                     
                     <p:dialog id="dialogoEstatus" header="ESTATUS DE SERIES CARGADAS" widgetVar="dlgEstatus"
-                              resizable="false" showEffect="clip" hideEffect="explode" modal="true" closeOnEscape="true">
+                              resizable="false" 
+                              showEffect="slide" 
+                              hideEffect="drop" 
+                              modal="true" 
+                              closable="false">
                         <p:panelGrid columns="2" style="margin: 0 auto; height: 300px; width: 600px; font-size: 16px; font-weight: bold">
                             <p:outputLabel value="Campo artículo vacío:"/>
                             <p:outputLabel value="#{serieBean.camposVaciosArticulo}" style="color: #0066ff"/>
@@ -109,7 +113,24 @@
                             <p:outputLabel value="Series duplicadas:"/>
                             <p:outputLabel value="#{serieBean.listaSeriesDuplicadas}" style="color: #E60013"/>
                         </p:panelGrid>
+                        <p:panelGrid columns="4">
+                            <p:outputLabel value="BORRAR FACTURA" />
+                            <p:commandButton value="" 
+                                             title="BORRAR FACTURA"
+                                             actionListener="#{serieBean.borrarFactura()}"
+                                             update="formExcel:tblSeries, formExcel:mensaje"
+                                             oncomplete="PF('dlgEstatus').hide()"
+                                             style="width: 40px; height:40px; background-image: url('../Images/delete.png'); 
+                                             background-size: 38px; background-repeat: no-repeat"/>
+                            <p:outputLabel value="CERRAR VENTANA Y CONTINUAR PROCESO" />
+                            <p:commandButton value="" 
+                                             title="CERRAR VENTANA Y CONTINUAR PROCESO"
+                                             style="width: 40px; height:40px; background-image: url('../Images/check.png'); 
+                                             background-size: 38px; background-repeat: no-repeat"
+                                             oncomplete="PF('dlgEstatus').hide()"/>
+                        </p:panelGrid>
                     </p:dialog>
+
                 </h:form>
                 <!--FINALIZA FORMUMARIO PARA VER EL ESTATUS DE LAS SERIES INGRESADAS-->
             </ui:define>

@@ -169,6 +169,26 @@ public class FacturaDaoImp implements FacturaDao {
         return lista;
     }
 
+    @Override
+    public void borrarFactura(String factura) {
+       Session session = HibernateUtil.getSessionfactory().openSession();
+        Transaction t = session.beginTransaction();
+        String hql = "DELETE  Factura  WHERE nofactura=:nofactura";
+        Query<?> q = session.createQuery(hql);
+        q.setParameter("nofactura", factura);
+        try {
+            q.executeUpdate();
+            t.commit();
+            session.close();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "SISTEMA DE ETIQUETAS", "Registro borrado"));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "SISTEMA DE ETIQUETAS", "ERROR" + e.getMessage()));
+            t.rollback();
+        }
+    }
+
    
 
 }

@@ -24,5 +24,7 @@ public interface FacturaDao {
     public List<Factura> listaTraspasoEntrada();
     
     public List<Factura> listaTraspasoSalida();
+    
+    public void borrarFactura(String factura);
 
 }

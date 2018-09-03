@@ -3,9 +3,12 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=SAE70Empre01</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://10.220.221.158\SQLEXPRESS;databaseName=SAE70Empre01</property>
         <property name="hibernate.connection.username">sa</property>
-        <property name="hibernate.connection.password">8dev*sys#1</property>
+        <property name="hibernate.connection.password">aspel**2012</property>
+<!--        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=SAE70Empre01</property>
+        <property name="hibernate.connection.username">sa</property>
+        <property name="hibernate.connection.password">8dev*sys#1</property>-->
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
         <mapping resource="com/etiquetas/qrsys/s/model/Inve01.hbm.xml"/>

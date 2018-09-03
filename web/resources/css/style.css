@@ -10,13 +10,13 @@ body
 {
     position: absolute;
     top: 62%;
-    left: 50%;
+    left: 51%;
     transform: translate(-50%,-50%);
     width: 300px;
-    height: 350px;
+    height: 370px;
     padding: 80px 40px;
     box-sizing: border-box;
-    background: rgba(0,0,0,.2);
+/*    background: rgba(0,0,0,.2);*/
 /*    background-image: url(../..//Images/qr.png);*/
 
 }

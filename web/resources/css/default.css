@@ -9,7 +9,7 @@
     font-family: 'Roboto Condensed', sans-serif;*/
 
 body {
-    background-color: #000017; 
+    background-color: #03235C; 
     /*#036FAB #AED2D9*/
     font-size: 10px;
     font-family: 'Orbitron', sans-serif;
@@ -37,13 +37,13 @@ h2 {
     color: #CC0505;
 }
 h3 {
-    font-family: 'Orbitron', sans-serif;
-    font-size:  18px;
+    font-family: 'Comfortaa', sans-serif;
+    font-size:  20px;
     font-weight: bold;
     margin: 0px;
     padding: 0px;
     text-align: center;
-    color: white;
+    color: #000017;
 }
 
 a:link, a:visited {

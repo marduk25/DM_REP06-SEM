@@ -43,8 +43,8 @@ public class SerieBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private UploadedFile nombre;
-    private final String path = "/home/danteac/Documents/ExcelFile/";
-    //private final String path = "C:\\ExcelFile\\";
+//    private final String path = "/home/danteac/Documents/ExcelFile/";
+    private final String path = "C:\\ExcelFile\\";
     private List<Object> listar;
     private Serie serie;
     private List<String> listarDesc;
@@ -321,8 +321,8 @@ public class SerieBean implements Serializable {
                 dir.flush();
                 dir.close();
             }
-            File f = new File("/home/danteac/Documents/ExcelFile/" + fileName);
-            // File f = new File("C:\\ExcelFile\\" + fileName);
+//            File f = new File("/home/danteac/Documents/ExcelFile/" + fileName);
+             File f = new File("C:\\ExcelFile\\" + fileName);
             LeerFichero(f);
             File deleteFile = new File(this.path + fileName);
             deleteFile.delete();

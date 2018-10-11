@@ -20,9 +20,9 @@
     height: 30px;
     border-radius: 13px;
     text-align: center;
-    font-size: 12.5px;
-    background-color: #CC0505;
-    color: white;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: #000017;
     padding: 5px;
     margin: 10px 0px 0px 0px;
     margin-top: 3px;
@@ -45,7 +45,7 @@
 .center_content {
     font-size: 12px;
     position: relative;
-    background-color: #CC0505;
+    background-color: #C5C5C5;
     border-radius: 13px;
     padding: 15px;
 }
